@@ -1,12 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  motion,
-  cubicBezier,
-  type MotionProps,
-} from "framer-motion";
+import { motion, cubicBezier, type MotionProps } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 // Brand palette
 const BRAND = {
@@ -45,45 +43,48 @@ export default function Header() {
         className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:py-4"
       >
         {/* Left: Logo + Name */}
-        <a href="/" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3">
           <div className="grid h-9 w-9 place-items-center rounded-xl bg-white/5 ring-1 ring-white/10">
             {/* From /public/BM_logo.png */}
-            <img
+            <Image
               src="/BM_logo.png"
               alt="BudMeet"
+              width={40}
+              height={40}
+              priority
               className="h-10 w-10 object-contain"
             />
           </div>
-          <span className="text-base tracking-tight font-bold text-white">
+          <span className="text-base font-bold tracking-tight text-white">
             BudMeet
           </span>
-        </a>
+        </Link>
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-7 text-sm text-white/80 md:flex">
-        <a className="transition hover:text-white" href="#about">
+          <Link className="transition hover:text-white" href="#about">
             About
-          </a>
-          <a className="transition hover:text-white" href="#features">
+          </Link>
+          <Link className="transition hover:text-white" href="#features">
             Features
-          </a>
-          <a className="transition hover:text-white" href="#working">
+          </Link>
+          <Link className="transition hover:text-white" href="#working">
             Working
-          </a>
-          <a className="transition hover:text-white" href="#safety_privacy">
+          </Link>
+          <Link className="transition hover:text-white" href="#safety_privacy">
             Safety&Privacy
-          </a>
+          </Link>
         </nav>
 
         {/* Right: CTA (desktop) */}
         <div className="hidden md:block">
-          <a
+          <Link
             href="#download"
             className="group inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white backdrop-blur transition hover:bg-white/10"
           >
             Get the App
-            <ArrowRight className="h-4 w-4 transition -translate-x-0 group-hover:translate-x-0.5" />
-          </a>
+            <ArrowRight className="h-4 w-4 -translate-x-0 transition group-hover:translate-x-0.5" />
+          </Link>
         </div>
 
         {/* Mobile menu toggle */}
@@ -91,6 +92,7 @@ export default function Header() {
           onClick={() => setOpen((v) => !v)}
           className="inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/5 p-2 text-white md:hidden"
           aria-label="Toggle menu"
+          aria-expanded={open}
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -101,28 +103,48 @@ export default function Header() {
         initial={false}
         animate={open ? "open" : "closed"}
         variants={{
-          open: { height: "auto", opacity: 1, transition: { duration: 0.35, ease: easeOutExpo } },
-          closed: { height: 0, opacity: 0, transition: { duration: 0.25, ease: easeOutExpo } },
+          open: {
+            height: "auto",
+            opacity: 1,
+            transition: { duration: 0.35, ease: easeOutExpo },
+          },
+          closed: {
+            height: 0,
+            opacity: 0,
+            transition: { duration: 0.25, ease: easeOutExpo },
+          },
         }}
         className="overflow-hidden border-t border-white/10 bg-[#0B0F14]/90 backdrop-blur md:hidden"
       >
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3 text-white/90">
-          <a onClick={() => setOpen(false)} className="rounded-lg px-2 py-2 hover:bg-white/5" href="#features">
+          <Link
+            href="#features"
+            onClick={() => setOpen(false)}
+            className="rounded-lg px-2 py-2 hover:bg-white/5"
+          >
             Features
-          </a>
-          <a onClick={() => setOpen(false)} className="rounded-lg px-2 py-2 hover:bg-white/5" href="#tech">
+          </Link>
+          <Link
+            href="#tech"
+            onClick={() => setOpen(false)}
+            className="rounded-lg px-2 py-2 hover:bg-white/5"
+          >
             Tech
-          </a>
-          <a onClick={() => setOpen(false)} className="rounded-lg px-2 py-2 hover:bg-white/5" href="#community">
+          </Link>
+          <Link
+            href="#community"
+            onClick={() => setOpen(false)}
+            className="rounded-lg px-2 py-2 hover:bg-white/5"
+          >
             Community
-          </a>
-          <a
+          </Link>
+          <Link
+            href="#download"
             onClick={() => setOpen(false)}
             className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white backdrop-blur hover:bg-white/10"
-            href="#download"
           >
             Get the App <ArrowRight className="h-4 w-4" />
-          </a>
+          </Link>
         </div>
       </motion.div>
     </header>

@@ -1,22 +1,23 @@
 "use client";
 
-import React, { Suspense, useMemo } from "react";
+import React, { Suspense } from "react";
 import { motion, cubicBezier } from "framer-motion";
 import { Canvas } from "@react-three/fiber";
 import {
-    Float,
-    Environment,
-    ContactShadows,
-    RoundedBox,
-    Center,
-    Bounds,
-  } from "@react-three/drei";
+  Float,
+  Environment,
+  ContactShadows,
+  RoundedBox,
+  Center,
+  Bounds,
+} from "@react-three/drei";
 import { ShieldCheck, MapPin, Ban, FileCheck2 } from "lucide-react";
+import Link from "next/link";
 
 /**
  * BudMeet — Safety & Privacy, By Design
  * - Calm glass panels + rotating 3D lock vignette
- * - Plain‑language policy highlights (on‑device checks, location privacy, block/report, audits)
+ * - Plain-language policy highlights (on-device checks, location privacy, block/report, audits)
  * - CTA: "Read our Safety Playbook"
  * - Tailwind v4 friendly
  */
@@ -50,15 +51,15 @@ export default function SafetyPrivacySection() {
               transition={{ duration: 0.6, ease, delay: 0.05 }}
               className="mt-3 max-w-prose text-zinc-400"
             >
-              Address the #1 adoption concern with transparent, on‑device safety checks and
-              location‑first privacy. Clear controls, quick reporting, and third‑party audits—built in.
+              Address the #1 adoption concern with transparent, on-device safety checks and
+              location-first privacy. Clear controls, quick reporting, and third-party audits—built in.
             </motion.p>
 
             {/* Glass highlight cards */}
             <ul className="mt-8 grid gap-4 sm:grid-cols-2">
               <GlassItem
                 icon={<ShieldCheck className="size-5" />}
-                title="On‑device checks"
+                title="On-device checks"
                 text="Profile photo & liveness checks run locally before anything leaves your phone."
               />
               <GlassItem
@@ -69,7 +70,7 @@ export default function SafetyPrivacySection() {
               <GlassItem
                 icon={<Ban className="size-5" />}
                 title="Block & report"
-                text="One‑tap block/report with behind‑the‑scenes evidence capture to our safety team."
+                text="One-tap block/report with behind-the-scenes evidence capture to our safety team."
               />
               <GlassItem
                 icon={<FileCheck2 className="size-5" />}
@@ -86,9 +87,9 @@ export default function SafetyPrivacySection() {
               transition={{ duration: 0.6, ease, delay: 0.1 }}
               className="mt-6 flex flex-wrap items-center gap-3 text-xs text-zinc-400"
             >
-              <Badge>ISO 27001‑aligned</Badge>
+              <Badge>ISO 27001-aligned</Badge>
               <Badge>OWASP ASVS</Badge>
-              <Badge>Pen‑tested</Badge>
+              <Badge>Pen-tested</Badge>
               <Badge>Privacy by Default</Badge>
             </motion.div>
 
@@ -100,16 +101,17 @@ export default function SafetyPrivacySection() {
               transition={{ duration: 0.6, ease, delay: 0.15 }}
               className="mt-8"
             >
-              <a
+              <Link
                 href="/safety-playbook"
                 className="inline-flex items-center gap-2 rounded-2xl bg-zinc-900/70 px-5 py-3 text-sm font-medium text-zinc-100 ring-1 ring-white/10 backdrop-blur-md transition hover:ring-cyan-400/40"
+                aria-label="Read our Safety Playbook"
               >
                 Read our Safety Playbook
                 <svg aria-hidden className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M7 17L17 7" />
                   <path d="M8 7h9v9" />
                 </svg>
-              </a>
+              </Link>
             </motion.div>
           </div>
 
@@ -121,7 +123,7 @@ export default function SafetyPrivacySection() {
             transition={{ duration: 0.7, ease }}
             className="relative aspect-[4/4] w-full overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/30 shadow-2xl ring-1 ring-white/10 backdrop-blur-xl"
           >
-            <Suspense fallback={<CanvasFallback />}> 
+            <Suspense fallback={<CanvasFallback />}>
               <LockScene />
             </Suspense>
           </motion.div>
@@ -169,83 +171,83 @@ function GlassItem({
   );
 }
 
-// --------------- 3D Scene -----------------
+/* ------------------------------- 3D Scene ------------------------------- */
 function LockScene() {
-    return (
-      <Canvas camera={{ position: [0.6, 0.9, 2.6], fov: 32 }} dpr={[1, 2]}>
-        {/* Auto-fit the contents inside the canvas */}
-        <Bounds fit clip observe margin={1.1}>
-          <Center disableZ>
-            <Float speed={0.5} rotationIntensity={0.45} floatIntensity={0.5}>
-              <group rotation={[0.04, Math.PI * 0.1, 0]} scale={0.9}>
-                {/* Shield backplate (glass) */}
-                <RoundedBox args={[1.25, 1.6, 0.18]} radius={0.2} smoothness={10} position={[0, 0.05, -0.05]}>
-                  <meshPhysicalMaterial
-                    color="#0b1220"
-                    transmission={0.35}
-                    roughness={0.2}
-                    metalness={0.1}
-                    thickness={0.85}
-                    clearcoat={1}
-                    ior={1.25}
-                  />
-                </RoundedBox>
-  
-                {/* Trust ring */}
-                <mesh position={[0, 0.1, -0.06]} rotation={[Math.PI / 2, 0, 0]}>
-                  <torusGeometry args={[0.95, 0.02, 24, 120]} />
-                  <meshStandardMaterial
-                    color="#67e8f9"
-                    emissive="#22d3ee"
-                    emissiveIntensity={0.35}
-                    roughness={0.4}
-                    metalness={0.2}
-                  />
-                </mesh>
-  
-                {/* Padlock */}
-                {/* Shackle */}
-                <mesh position={[0, 0.62, 0.02]} rotation={[Math.PI / 2, 0, 0]} castShadow receiveShadow>
-                  <torusGeometry args={[0.38, 0.07, 32, 72, Math.PI]} />
-                  <meshPhysicalMaterial metalness={0.65} roughness={0.25} clearcoat={0.6} color="#b9f2ff" />
-                </mesh>
-  
-                {/* Body */}
-                <RoundedBox args={[0.82, 0.95, 0.36]} radius={0.08} smoothness={8} position={[0, 0.0, 0.02]}>
-                  <meshPhysicalMaterial
-                    color="#0e1726"
-                    metalness={0.22}
-                    roughness={0.35}
-                    transmission={0.18}
-                    thickness={0.5}
-                    clearcoat={1}
-                  />
-                </RoundedBox>
-  
-                {/* Keyhole */}
-                <mesh position={[0, -0.08, 0.21]}>
-                  <cylinderGeometry args={[0.06, 0.06, 0.06, 24]} />
-                  <meshStandardMaterial color="#e5e7eb" />
-                </mesh>
-  
-                {/* Verified check */}
-                <RoundedBox args={[0.26, 0.26, 0.08]} radius={0.06} smoothness={8} position={[0.35, 0.25, 0.22]}>
-                  <meshStandardMaterial color="#0ea5e9" emissive="#38bdf8" emissiveIntensity={0.4} />
-                </RoundedBox>
-              </group>
-            </Float>
-          </Center>
-        </Bounds>
-  
-        {/* Lighting & reflections */}
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[2, 3, 2]} intensity={0.7} />
-        <Environment preset="city" />
-        <ContactShadows position={[0, -0.85, 0]} opacity={0.35} scale={6} blur={2.5} far={2.5} />
-      </Canvas>
-    );
-  }
-  
+  return (
+    <Canvas camera={{ position: [0.6, 0.9, 2.6], fov: 32 }} dpr={[1, 2]}>
+      {/* Auto-fit the contents inside the canvas */}
+      <Bounds fit clip observe margin={1.1}>
+        <Center disableZ>
+          <Float speed={0.5} rotationIntensity={0.45} floatIntensity={0.5}>
+            <group rotation={[0.04, Math.PI * 0.1, 0]} scale={0.9}>
+              {/* Shield backplate (glass) */}
+              <RoundedBox args={[1.25, 1.6, 0.18]} radius={0.2} smoothness={10} position={[0, 0.05, -0.05]}>
+                <meshPhysicalMaterial
+                  color="#0b1220"
+                  transmission={0.35}
+                  roughness={0.2}
+                  metalness={0.1}
+                  thickness={0.85}
+                  clearcoat={1}
+                  ior={1.25}
+                />
+              </RoundedBox>
+
+              {/* Trust ring */}
+              <mesh position={[0, 0.1, -0.06]} rotation={[Math.PI / 2, 0, 0]}>
+                <torusGeometry args={[0.95, 0.02, 24, 120]} />
+                <meshStandardMaterial
+                  color="#67e8f9"
+                  emissive="#22d3ee"
+                  emissiveIntensity={0.35}
+                  roughness={0.4}
+                  metalness={0.2}
+                />
+              </mesh>
+
+              {/* Padlock */}
+              {/* Shackle */}
+              <mesh position={[0, 0.62, 0.02]} rotation={[Math.PI / 2, 0, 0]} castShadow receiveShadow>
+                <torusGeometry args={[0.38, 0.07, 32, 72, Math.PI]} />
+                <meshPhysicalMaterial metalness={0.65} roughness={0.25} clearcoat={0.6} color="#b9f2ff" />
+              </mesh>
+
+              {/* Body */}
+              <RoundedBox args={[0.82, 0.95, 0.36]} radius={0.08} smoothness={8} position={[0, 0.0, 0.02]}>
+                <meshPhysicalMaterial
+                  color="#0e1726"
+                  metalness={0.22}
+                  roughness={0.35}
+                  transmission={0.18}
+                  thickness={0.5}
+                  clearcoat={1}
+                />
+              </RoundedBox>
+
+              {/* Keyhole */}
+              <mesh position={[0, -0.08, 0.21]}>
+                <cylinderGeometry args={[0.06, 0.06, 0.06, 24]} />
+                <meshStandardMaterial color="#e5e7eb" />
+              </mesh>
+
+              {/* Verified check */}
+              <RoundedBox args={[0.26, 0.26, 0.08]} radius={0.06} smoothness={8} position={[0.35, 0.25, 0.22]}>
+                <meshStandardMaterial color="#0ea5e9" emissive="#38bdf8" emissiveIntensity={0.4} />
+              </RoundedBox>
+            </group>
+          </Float>
+        </Center>
+      </Bounds>
+
+      {/* Lighting & reflections */}
+      <ambientLight intensity={0.6} />
+      <directionalLight position={[2, 3, 2]} intensity={0.7} />
+      <Environment preset="city" />
+      <ContactShadows position={[0, -0.85, 0]} opacity={0.35} scale={6} blur={2.5} far={2.5} />
+    </Canvas>
+  );
+}
+
 function CanvasFallback() {
   return (
     <div className="flex h-full w-full items-center justify-center text-zinc-400">

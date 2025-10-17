@@ -11,6 +11,7 @@ import {
   ContactShadows,
 } from "@react-three/drei";
 import * as THREE from "three";
+import Link from "next/link";
 
 /**
  * HowBudMeetWorks — Aurelia Premier+ (Bullets removed, higher polish)
@@ -47,7 +48,11 @@ function useParallax() {
     my.set(e.clientY - (r.top + r.height / 2));
     tz.set(14);
   };
-  const onLeave = () => { mx.set(0); my.set(0); tz.set(0); };
+  const onLeave = () => {
+    mx.set(0);
+    my.set(0);
+    tz.set(0);
+  };
   return { rx, ry, tz, onMove, onLeave };
 }
 
@@ -67,17 +72,35 @@ function TinyCanvas({ children }: { children: React.ReactNode }) {
 
 // ---------------- Semantic 3D minis ----------------
 function ProfileGem3D() {
-  const glass = useMemo(() => new THREE.MeshPhysicalMaterial({
-    roughness: 0.16, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.05,
-    color: new THREE.Color(TOKENS.violet), transmission: 0.82, thickness: 0.7, ior: 1.3,
-  }), []);
-  const ring = useMemo(() => new THREE.MeshStandardMaterial({
-    color: TOKENS.cyan, metalness: 0.7, roughness: 0.28,
-  }), []);
+  const glass = useMemo(
+    () =>
+      new THREE.MeshPhysicalMaterial({
+        roughness: 0.16,
+        metalness: 0.05,
+        clearcoat: 1,
+        clearcoatRoughness: 0.05,
+        color: new THREE.Color(TOKENS.violet),
+        transmission: 0.82,
+        thickness: 0.7,
+        ior: 1.3,
+      }),
+    []
+  );
+  const ring = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: TOKENS.cyan,
+        metalness: 0.7,
+        roughness: 0.28,
+      }),
+    []
+  );
   return (
     <Float speed={1.05} rotationIntensity={0.9} floatIntensity={0.95}>
       <group>
-        <mesh material={glass}><dodecahedronGeometry args={[0.72, 0]} /></mesh>
+        <mesh material={glass}>
+          <dodecahedronGeometry args={[0.72, 0]} />
+        </mesh>
         <mesh rotation={[Math.PI / 3, 0, Math.PI / 6]} material={ring}>
           <torusGeometry args={[1.0, 0.03, 16, 110]} />
         </mesh>
@@ -88,9 +111,16 @@ function ProfileGem3D() {
     </Float>
   );
 }
+
 function LinkRings3D() {
-  const a = useMemo(() => new THREE.MeshStandardMaterial({ color: TOKENS.cyan, metalness: 0.72, roughness: 0.26 }), []);
-  const b = useMemo(() => new THREE.MeshStandardMaterial({ color: TOKENS.violet, metalness: 0.72, roughness: 0.28 }), []);
+  const a = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: TOKENS.cyan, metalness: 0.72, roughness: 0.26 }),
+    []
+  );
+  const b = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: TOKENS.violet, metalness: 0.72, roughness: 0.28 }),
+    []
+  );
   return (
     <Float speed={1.02} rotationIntensity={0.9} floatIntensity={0.95}>
       <group>
@@ -104,42 +134,54 @@ function LinkRings3D() {
     </Float>
   );
 }
+
 function ChatBubbles3D() {
-  const mA = useMemo(() => new THREE.MeshStandardMaterial({ color: TOKENS.blue, metalness: 0.32, roughness: 0.38 }), []);
-  const mB = useMemo(() => new THREE.MeshStandardMaterial({ color: "#60a5fa", metalness: 0.26, roughness: 0.42 }), []);
+  const mA = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: TOKENS.blue, metalness: 0.32, roughness: 0.38 }),
+    []
+  );
+  const mB = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#60a5fa", metalness: 0.26, roughness: 0.42 }),
+    []
+  );
   return (
     <Float speed={1.0} rotationIntensity={0.85} floatIntensity={0.92}>
       <group>
         <group position={[-0.25, 0.02, 0]}>
           <RoundedBox args={[0.95, 0.55, 0.35]} radius={0.18} smoothness={6}>
-            <meshStandardMaterial attach="material" {...(mA as any)} />
+            <primitive attach="material" object={mA} />
           </RoundedBox>
-          <mesh position={[0.55, -0.3, 0]} rotation={[0, 0, -0.6]}>
+          <mesh position={[0.55, -0.3, 0]} rotation={[0, 0, -0.6]} material={mA}>
             <coneGeometry args={[0.12, 0.22, 20]} />
-            <meshStandardMaterial {...(mA as any)} />
           </mesh>
         </group>
         <group position={[0.45, -0.1, 0.05]} scale={[0.82, 0.82, 0.82]}>
           <RoundedBox args={[0.8, 0.45, 0.3]} radius={0.16} smoothness={6}>
-            <meshStandardMaterial attach="material" {...(mB as any)} />
+            <primitive attach="material" object={mB} />
           </RoundedBox>
-          <mesh position={[-0.45, -0.27, 0]} rotation={[0, 0, 0.6]}>
+          <mesh position={[-0.45, -0.27, 0]} rotation={[0, 0, 0.6]} material={mB}>
             <coneGeometry args={[0.1, 0.2, 20]} />
-            <meshStandardMaterial {...(mB as any)} />
           </mesh>
         </group>
       </group>
     </Float>
   );
 }
+
 function Padlock3D() {
-  const body = useMemo(() => new THREE.MeshStandardMaterial({ color: TOKENS.green, metalness: 0.5, roughness: 0.35 }), []);
-  const shackle = useMemo(() => new THREE.MeshStandardMaterial({ color: "#34d399", metalness: 0.74, roughness: 0.28 }), []);
+  const body = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: TOKENS.green, metalness: 0.5, roughness: 0.35 }),
+    []
+  );
+  const shackle = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#34d399", metalness: 0.74, roughness: 0.28 }),
+    []
+  );
   return (
     <Float speed={1.0} rotationIntensity={0.88} floatIntensity={0.92}>
       <group>
         <RoundedBox args={[0.9, 0.9, 0.4]} radius={0.2} smoothness={6} position={[0, -0.2, 0]}>
-          <meshStandardMaterial attach="material" {...(body as any)} />
+          <primitive attach="material" object={body} />
         </RoundedBox>
         <mesh position={[0, 0.35, 0]} rotation={[Math.PI / 2, 0, 0]} material={shackle}>
           <torusGeometry args={[0.5, 0.09, 18, 100]} />
@@ -154,7 +196,7 @@ function Padlock3D() {
 }
 
 // ---------------- Data ----------------
-type Step = { k: string; title: string; desc: string; Three: React.ComponentType; };
+type Step = { k: string; title: string; desc: string; Three: React.ComponentType };
 const STEPS: Step[] = [
   { k: "01", title: "Create your vibe profile", desc: "Pick interests, set your vibe (introvert / ambivert / extrovert). Our AI tunes your discovery feed.", Three: ProfileGem3D },
   { k: "02", title: "Instant matches nearby", desc: "We prioritize people around you by vibe similarity and intent. Tap to connect or pass.", Three: LinkRings3D },
@@ -236,7 +278,7 @@ function StepCard({ s, i }: { s: Step; i: number }) {
           <p className={`mt-2 text-sm leading-6 ${TOKENS.fgMuted}`}>{s.desc}</p>
 
           {/* focus trap for whole card */}
-          <a
+          <Link
             href="#download"
             className="absolute inset-0 rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60"
             aria-label={`Open: ${s.title}`}
@@ -259,7 +301,10 @@ function SectionHeader() {
   return (
     <header className="mx-auto mb-14 max-w-4xl text-center">
       <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease }} viewport={{ once: true }}>
-        <Badge><span className="h-1.5 w-1.5 rounded-full bg-white/70" />Product Flow</Badge>
+        <Badge>
+          <span className="h-1.5 w-1.5 rounded-full bg-white/70" />
+          Product Flow
+        </Badge>
       </motion.div>
 
       <motion.h2
@@ -282,7 +327,9 @@ function SectionHeader() {
         Four precise steps. Executive-level UX. Safety by default.
       </motion.p>
 
-      <div className="mx-auto mt-8 w-60"><Hairline /></div>
+      <div className="mx-auto mt-8 w-60">
+        <Hairline />
+      </div>
     </header>
   );
 }
@@ -304,7 +351,9 @@ export default function HowBudMeetWorksSection() {
 
         {/* Steps (no bullets) */}
         <ol className="grid grid-cols-1 gap-7" role="list">
-          {STEPS.map((s, i) => <StepCard key={s.k} s={s} i={i} />)}
+          {STEPS.map((s, i) => (
+            <StepCard key={s.k} s={s} i={i} />
+          ))}
         </ol>
       </div>
     </section>

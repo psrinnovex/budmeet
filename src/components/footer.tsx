@@ -10,9 +10,10 @@ import {
   Github,
   Globe,
   Mail,
-  Smartphone,
   ChevronDown,
 } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 const ease = cubicBezier(0.22, 1, 0.36, 1);
 
@@ -41,9 +42,9 @@ const DEFAULT_COLUMNS: LinkColumn[] = [
   {
     heading: "Company",
     links: [
-      { label: "About", href: "https://pshrinnovex.com/about" },
-      { label: "Services", href: "https://pshrinnovex.com/services" },
-      { label: "Contact", href: "https://pshrinnovex.com/contact" },
+      { label: "About", href: "https://pshrinnovex.com/about", external: true },
+      { label: "Services", href: "https://pshrinnovex.com/services", external: true },
+      { label: "Contact", href: "https://pshrinnovex.com/contact", external: true },
     ],
   },
   {
@@ -85,19 +86,19 @@ export default function AdvancedFooter({
   const [locale, setLocale] = useState(locales[0] ?? "English (US)");
 
   return (
-    <footer className="w-full relative bg-transparent">
+    <footer className="relative w-full bg-transparent">
       {/* FULL-WIDTH FX BACKDROP (subtle grid + beams) */}
       <div className="pointer-events-none absolute inset-0">
         {/* gradient beams */}
         <div
-          className="absolute -top-24 left-1/3 h-72 w-72 translate-x-[-50%] rounded-full blur-3xl opacity-30"
+          className="absolute -top-24 left-1/3 h-72 w-72 translate-x-[-50%] rounded-full opacity-30 blur-3xl"
           style={{
             background:
               "radial-gradient(60% 60% at 50% 50%, rgba(45,212,191,0.25) 0%, rgba(59,130,246,0.08) 60%, transparent 80%)",
           }}
         />
         <div
-          className="absolute -bottom-24 right-1/4 h-72 w-72 translate-x-[50%] rounded-full blur-3xl opacity-30"
+          className="absolute -bottom-24 right-1/4 h-72 w-72 translate-x-[50%] rounded-full opacity-30 blur-3xl"
           style={{
             background:
               "radial-gradient(60% 60% at 50% 50%, rgba(34,211,238,0.25) 0%, rgba(16,185,129,0.08) 60%, transparent 80%)",
@@ -122,46 +123,68 @@ export default function AdvancedFooter({
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, ease } }}
           viewport={{ once: true }}
-          className="mt-20 mb-0 overflow-hidden rounded-none border-y border-zinc-800/40 bg-zinc-900/60 backdrop-blur-xl shadow-[0_10px_60px_-20px_rgba(0,0,0,0.6)]"
+          className="mt-20 mb-0 overflow-hidden rounded-none border-y border-zinc-800/40 bg-zinc-900/60 shadow-[0_10px_60px_-20px_rgba(0,0,0,0.6)] backdrop-blur-xl"
         >
           {/* TOP ROW: Brand + badges + socials */}
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="py-8 lg:py-12">
               <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
                 <div className="flex items-center gap-4">
-                  <a href={brand.href ?? "/"} className="flex items-center gap-3">
-                    <img
-                      src={brand.logoSrc}
-                      alt={`${brand.name} logo`}
-                      className="h-10 w-10 object-contain"
-                    />
+                  <Link href={brand.href ?? "/"} className="flex items-center gap-3">
+                    <span className="grid h-10 w-10 place-items-center overflow-hidden rounded-lg bg-white/5 ring-1 ring-white/10">
+                      <Image
+                        src={brand.logoSrc}
+                        alt={`${brand.name} logo`}
+                        width={40}
+                        height={40}
+                        className="h-10 w-10 object-contain"
+                        priority={false}
+                      />
+                    </span>
                     <span className="text-xl font-semibold text-zinc-100">
                       {brand.name}
                     </span>
-                  </a>
-                  <span className="hidden md:inline-block h-5 w-px bg-zinc-700/50" />
-                  <p className="text-sm text-zinc-400 max-w-xl">{brand.tagline}</p>
+                  </Link>
+                  <span className="hidden h-5 w-px bg-zinc-700/50 md:inline-block" />
+                  <p className="max-w-xl text-sm text-zinc-400">{brand.tagline}</p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
-                  {appBadges.map((b) => (
-                    <a
-                      key={b.label}
-                      href={b.href}
-                      className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-900/60 transition"
-                    >
-                      <img src={b.iconSrc} alt="" className="h-4 w-4" />
-                      {b.label}
-                    </a>
-                  ))}
-                  <div className="hidden md:block h-6 w-px bg-zinc-700/50 mx-1" />
+                  {appBadges.map((b) => {
+                    const isInternal = b.href.startsWith("/") || b.href.startsWith("#");
+                    const badge = (
+                      <span className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-sm text-zinc-200 transition hover:bg-zinc-900/60">
+                        <Image src={b.iconSrc} alt="" width={16} height={16} />
+                        {b.label}
+                      </span>
+                    );
+                    return isInternal ? (
+                      <Link key={b.label} href={b.href} className="contents">
+                        {badge}
+                      </Link>
+                    ) : (
+                      <a
+                        key={b.label}
+                        href={b.href}
+                        className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-sm text-zinc-200 transition hover:bg-zinc-900/60"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Image src={b.iconSrc} alt="" width={16} height={16} />
+                        {b.label}
+                      </a>
+                    );
+                  })}
+                  <div className="mx-1 hidden h-6 w-px bg-zinc-700/50 md:block" />
                   <div className="flex items-center gap-1">
                     {socials.map((s) => (
                       <a
                         key={s.label}
                         aria-label={s.label}
                         href={s.href}
-                        className="p-2 rounded-md hover:bg-zinc-800/60 text-zinc-300"
+                        className="rounded-md p-2 text-zinc-300 hover:bg-zinc-800/60"
+                        target="_blank"
+                        rel="noreferrer"
                       >
                         {s.icon}
                       </a>
@@ -173,8 +196,8 @@ export default function AdvancedFooter({
           </div>
 
           {/* MIDDLE: Newsletter */}
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 pb-2">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+          <div className="mx-auto max-w-7xl px-6 pb-2 lg:px-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
               <div className="md:col-span-7">
                 <h4 className="text-sm font-medium text-zinc-200">Stay in the loop</h4>
                 <p className="mt-1 text-sm text-zinc-400">
@@ -198,7 +221,7 @@ export default function AdvancedFooter({
                     type="email"
                     required
                     placeholder="you@domain.com"
-                    className="min-w-0 flex-1 rounded-lg bg-zinc-900/40 border border-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-700"
+                    className="min-w-0 flex-1 rounded-lg border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-700"
                   />
                   <motion.button
                     whileTap={{ scale: 0.98 }}
@@ -213,44 +236,50 @@ export default function AdvancedFooter({
           </div>
 
           {/* LINK COLUMNS */}
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 pt-6">
+          <div className="mx-auto max-w-7xl px-6 pt-6 lg:px-8">
             {/* Desktop */}
-            <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="hidden grid-cols-2 gap-8 md:grid lg:grid-cols-4">
               {columns.map((col) => (
                 <div key={col.heading}>
                   <h4 className="text-sm font-medium text-zinc-200">{col.heading}</h4>
                   <ul className="mt-3 space-y-2 text-sm text-zinc-400">
-                    {col.links.map((lnk) => (
-                      <li key={lnk.label}>
-                        <a
-                          href={lnk.href}
-                          target={lnk.external ? "_blank" : undefined}
-                          rel={lnk.external ? "noreferrer" : undefined}
-                          className="hover:text-zinc-100"
-                        >
-                          {lnk.label}
-                        </a>
-                      </li>
-                    ))}
+                    {col.links.map((lnk) => {
+                      const isInternal =
+                        lnk.href.startsWith("/") || lnk.href.startsWith("#");
+                      return (
+                        <li key={lnk.label}>
+                          {isInternal ? (
+                            <Link href={lnk.href} className="hover:text-zinc-100">
+                              {lnk.label}
+                            </Link>
+                          ) : (
+                            <a
+                              href={lnk.href}
+                              target={lnk.external ? "_blank" : undefined}
+                              rel={lnk.external ? "noreferrer" : undefined}
+                              className="hover:text-zinc-100"
+                            >
+                              {lnk.label}
+                            </a>
+                          )}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               ))}
             </div>
 
             {/* Mobile */}
-            <div className="md:hidden divide-y divide-zinc-800/60">
+            <div className="divide-y divide-zinc-800/60 md:hidden">
               {columns.map((col) => (
-                <MobileColumn
-                  key={col.heading}
-                  heading={col.heading}
-                  links={col.links}
-                />
+                <MobileColumn key={col.heading} heading={col.heading} links={col.links} />
               ))}
             </div>
           </div>
 
           {/* BOTTOM ROW: locale + legal */}
-          <div className="mx-auto max-w-7xl px-6 lg:px-8 mt-8 border-t border-zinc-800/40 py-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="mx-auto mt-8 flex flex-col gap-4 border-t border-zinc-800/40 px-6 py-6 md:flex-row md:items-center md:justify-between lg:px-8">
             <div className="flex items-center gap-3">
               <button
                 className="inline-flex items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900/40 px-3 py-1.5 text-sm text-zinc-200"
@@ -272,15 +301,15 @@ export default function AdvancedFooter({
             </div>
 
             <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400">
-              <a href="/privacy" className="hover:text-zinc-200">
+              <Link href="/privacy" className="hover:text-zinc-200">
                 Privacy
-              </a>
-              <a href="/terms" className="hover:text-zinc-200">
+              </Link>
+              <Link href="/terms" className="hover:text-zinc-200">
                 Terms
-              </a>
-              <a href="/contact" className="hover:text-zinc-200">
+              </Link>
+              <Link href="/contact" className="hover:text-zinc-200">
                 Contact
-              </a>
+              </Link>
               <span className="text-zinc-600">·</span>
               <span className="text-zinc-500">Uptime 99.9% · Backed up daily</span>
             </div>
@@ -297,7 +326,7 @@ function MobileColumn({ heading, links }: { heading: string; links: LinkItem[] }
   return (
     <div>
       <button
-        className="w-full flex items-center justify-between py-3"
+        className="flex w-full items-center justify-between py-3"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
       >
@@ -308,19 +337,28 @@ function MobileColumn({ heading, links }: { heading: string; links: LinkItem[] }
         />
       </button>
       {open && (
-        <ul className="pb-3 space-y-2 text-sm text-zinc-400">
-          {links.map((lnk) => (
-            <li key={lnk.label}>
-              <a
-                href={lnk.href}
-                target={lnk.external ? "_blank" : undefined}
-                rel={lnk.external ? "noreferrer" : undefined}
-                className="block py-1 hover:text-zinc-100"
-              >
-                {lnk.label}
-              </a>
-            </li>
-          ))}
+        <ul className="space-y-2 pb-3 text-sm text-zinc-400">
+          {links.map((lnk) => {
+            const isInternal = lnk.href.startsWith("/") || lnk.href.startsWith("#");
+            return (
+              <li key={lnk.label}>
+                {isInternal ? (
+                  <Link href={lnk.href} className="block py-1 hover:text-zinc-100">
+                    {lnk.label}
+                  </Link>
+                ) : (
+                  <a
+                    href={lnk.href}
+                    target={lnk.external ? "_blank" : undefined}
+                    rel={lnk.external ? "noreferrer" : undefined}
+                    className="block py-1 hover:text-zinc-100"
+                  >
+                    {lnk.label}
+                  </a>
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

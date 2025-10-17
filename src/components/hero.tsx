@@ -6,6 +6,8 @@ import { ArrowRight, Sparkles, Users } from "lucide-react";
 // 3D
 import { Canvas } from "@react-three/fiber";
 import { Float, Sparkles as DreiSparkles } from "@react-three/drei";
+import Link from "next/link";
+import Image from "next/image";
 
 const BRAND = {
   bg: "#0B0F14",
@@ -151,19 +153,19 @@ export default function Hero() {
             </motion.p>
 
             <motion.div variants={item} className="flex flex-col gap-3 sm:flex-row">
-              <a
+              <Link
                 href="#download"
                 className="group inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-white backdrop-blur transition hover:bg-white/20"
               >
                 Get the App
-                <ArrowRight className="h-4 w-4 transition -translate-x-0 group-hover:translate-x-0.5" />
-              </a>
-              <a
+                <ArrowRight className="h-4 w-4 -translate-x-0 transition group-hover:translate-x-0.5" />
+              </Link>
+              <Link
                 href="#features"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-transparent px-4 py-2.5 text-white/80 transition hover:text-white"
               >
                 See how it works
-              </a>
+              </Link>
             </motion.div>
 
             <motion.div variants={item} className="flex items-center gap-6 pt-2 text-xs text-white/60">
@@ -172,7 +174,7 @@ export default function Hero() {
                 <span>Built for IRL connections</span>
               </div>
               <div className="hidden h-3 w-px bg-white/10 sm:block" />
-              <div className="hidden sm:block">Communitie by default</div>
+              <div className="hidden sm:block">Community by default</div>
             </motion.div>
           </div>
 
@@ -208,11 +210,14 @@ export default function Hero() {
                       <span className="absolute -left-1/3 top-0 h-full w-1/2 translate-x-[-120%] bg-gradient-to-r from-white/10 via-white/25 to-transparent blur-md will-change-transform [animation:shine_6s_linear_infinite]" />
                     </span>
 
-                    <img
+                    {/* Screen image (optimized) */}
+                    <Image
                       src="/budmeet-home.jpg" // ensure file exists in /public
                       alt="BudMeet app preview"
-                      className="absolute inset-0 h-full w-full object-cover"
-                      loading="eager"
+                      fill
+                      sizes="(max-width: 640px) 90vw, (max-width: 1024px) 40vw, 420px"
+                      priority
+                      className="object-cover"
                     />
                   </div>
                 </div>
