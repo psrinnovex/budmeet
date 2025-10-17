@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Optional custom globals */
+:root { --brand: #22d3ee; }
+html, body { height: 100%; }
+* { box-sizing: border-box; }
