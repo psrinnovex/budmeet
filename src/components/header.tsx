@@ -118,6 +118,13 @@ export default function Header() {
       >
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3 text-white/90">
           <Link
+            href="#about"
+            onClick={() => setOpen(false)}
+            className="rounded-lg px-2 py-2 hover:bg-white/5"
+          >
+            About
+          </Link>
+          <Link
             href="#features"
             onClick={() => setOpen(false)}
             className="rounded-lg px-2 py-2 hover:bg-white/5"
@@ -125,18 +132,18 @@ export default function Header() {
             Features
           </Link>
           <Link
-            href="#tech"
+            href="#working"
             onClick={() => setOpen(false)}
             className="rounded-lg px-2 py-2 hover:bg-white/5"
           >
-            Tech
+            Working
           </Link>
           <Link
-            href="#community"
+            href="#safety_privacy"
             onClick={() => setOpen(false)}
             className="rounded-lg px-2 py-2 hover:bg-white/5"
           >
-            Community
+            Safety&Privacy
           </Link>
           <Link
             href="#download"

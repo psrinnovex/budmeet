@@ -161,7 +161,7 @@ export default function Hero() {
                 <ArrowRight className="h-4 w-4 -translate-x-0 transition group-hover:translate-x-0.5" />
               </Link>
               <Link
-                href="#features"
+                href="#working"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-transparent px-4 py-2.5 text-white/80 transition hover:text-white"
               >
                 See how it works
