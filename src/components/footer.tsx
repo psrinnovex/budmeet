@@ -50,9 +50,8 @@ const DEFAULT_COLUMNS: LinkColumn[] = [
   {
     heading: "Legal",
     links: [
-      { label: "Privacy", href: "/privacy" },
-      { label: "Terms", href: "/terms" },
-      { label: "Community Guidelines", href: "/guidelines" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms & Conditions", href: "/terms" },
     ],
   },
 ];
@@ -250,7 +249,7 @@ export default function AdvancedFooter({
             <div className="hidden grid-cols-2 gap-8 md:grid lg:grid-cols-4">
               {columns.map((col) => (
                 <div key={col.heading}>
-                  <h4 className="text-sm font-medium text-zinc-200">{col.heading}</h4>
+                  <h4 className="text-sm font-medium text-zinc-200">{col.heading}</h4> 
                   <ul className="mt-3 space-y-2 text-sm text-zinc-400">
                     {col.links.map((lnk) => {
                       const isInternal = lnk.href.startsWith("/") || lnk.href.startsWith("#");
@@ -301,21 +300,12 @@ export default function AdvancedFooter({
                 <span>{locale}</span>
                 <ChevronDown size={14} className="opacity-60" />
               </button>
-              <span className="text-sm text-zinc-500">
-                © {new Date().getFullYear()} {copyrightName}
-              </span>
             </div>
 
             <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-400">
-              <Link href="/privacy" className="hover:text-zinc-200">
-                Privacy
-              </Link>
-              <Link href="/terms" className="hover:text-zinc-200">
-                Terms
-              </Link>
-              <Link href="/contact" className="hover:text-zinc-200">
-                Contact
-              </Link>
+              <span className="text-sm text-zinc-500">
+                © {new Date().getFullYear()} {copyrightName}
+              </span>
             </div>
           </div>
         </motion.div>
