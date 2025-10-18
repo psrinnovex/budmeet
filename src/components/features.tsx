@@ -1,9 +1,16 @@
 // src/components/features.tsx
 "use client";
 
-import React, { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Float, Environment, Html, Trail, Stars, MeshDistortMaterial } from "@react-three/drei";
+import React, { Suspense, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import {
+  Float,
+  Environment,
+  Html,
+  Trail,
+  Stars,
+  MeshDistortMaterial,
+} from "@react-three/drei";
 import * as THREE from "three";
 import Image from "next/image";
 
@@ -22,27 +29,28 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="
-        relative isolate w-full max-w-[100vw]
-        overflow-x-clip overflow-y-visible
-        [contain:layout_paint]
-      "
+      className="relative isolate" // ← no width/overflow guards here
       style={{ backgroundColor: BRAND.bg }}
     >
-      {/* 3D BACKGROUND (clipped) */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-x-clip">
+      {/* 3D BACKGROUND (same look, clipping is scoped here) */}
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+        aria-hidden
+      >
         <Canvas
           dpr={[1, 1.6]}
           camera={{ position: [0, 0, 14], fov: 52 }}
+          gl={{ antialias: true, alpha: true }}
           className="!block w-full h-full"
         >
+          {/* No <color attach="background" /> so section bg shows through */}
           <Suspense fallback={null}>
             <SceneAurora />
           </Suspense>
         </Canvas>
       </div>
 
-      {/* HEADER + GRID */}
+      {/* HEADER + GRID (unchanged layout) */}
       <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-16 sm:pt-20 md:pt-24">
         <div className="text-center">
           <h2 className="text-[clamp(1.8rem,3.4vw,2.6rem)] font-extrabold tracking-tight text-white">
@@ -104,14 +112,14 @@ function ImageFeature({
   );
 }
 
-/* ===================== 3D SCENE (unchanged visuals) ===================== */
+/* ===================== 3D SCENE (same visuals) ===================== */
 
 function SceneAurora() {
   const energy = 1.0;
 
   return (
     <>
-      <color attach="background" args={[BRAND.bg]} />
+      {/* keep starfield & lights the same */}
       <Stars radius={80} depth={30} count={3200} factor={2.2} saturation={0} fade speed={0.6} />
       <ambientLight intensity={0.45} />
       <pointLight position={[8, 10, 12]} intensity={0.75} color={BRAND.blue} />
@@ -214,18 +222,29 @@ function OrbitNode({
 }: {
   color: string;
   radius: number;
-  speed: number;
+  speed: number; // radians per second around the origin
   phase?: number;
 }) {
-  const ref = React.useRef<THREE.Mesh>(null!);
-  useEffectOnceForTypes();
+  const ref = useRef<THREE.Mesh>(null!);
 
-  function useEffectOnceForTypes() {
-    // no-op to satisfy TypeScript when no other hooks are here
-  }
+  // simple circular orbit animation
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    const a = t * speed + phase;
+    const x = Math.cos(a) * radius;
+    const z = Math.sin(a) * radius;
+    const y = Math.sin(a * 1.25) * (radius * 0.16) + 0.3;
+    ref.current.position.set(x, y, z);
+  });
 
   return (
-    <Trail width={0.14} color={new THREE.Color(color)} length={26} decay={0.8} attenuation={(w) => w}>
+    <Trail
+      width={0.14}
+      color={new THREE.Color(color)}
+      length={26}
+      decay={0.8}
+      attenuation={(w) => w}
+    >
       <mesh ref={ref}>
         <sphereGeometry args={[0.22, 24, 24]} />
         <meshStandardMaterial
