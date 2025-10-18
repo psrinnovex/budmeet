@@ -310,8 +310,6 @@ export default function AdvancedFooter({
               <Link href="/contact" className="hover:text-zinc-200">
                 Contact
               </Link>
-              <span className="text-zinc-600">·</span>
-              <span className="text-zinc-500">Uptime 99.9% · Backed up daily</span>
             </div>
           </div>
         </motion.div>
