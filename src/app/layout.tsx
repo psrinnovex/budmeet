@@ -8,7 +8,7 @@ import AdvancedFooter from "@/components/footer";
 
 const siteName = "BudMeet";
 const siteUrl = "https://budmeet.app";
-const ogImage = "/og-image.png"; // ensure this exists; 1200x630 recommended
+const ogImage = "/og-image.png"; // ensure this exists (1200x630)
 const title = "BudMeet — The Real-Life Social / Vibe Matching App";
 const description =
   "BudMeet is a social app for real local meetups. No swipes, no fluff — just real connections in your city.";
@@ -17,6 +17,7 @@ export const viewport: Viewport = {
   themeColor: "#0B0F14",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover", // <- important on iOS to use full width without phantom gutters
 };
 
 export const metadata: Metadata = {
@@ -41,9 +42,7 @@ export const metadata: Metadata = {
     "event planning",
   ],
   authors: [{ name: "BudMeet" }],
-  alternates: {
-    canonical: "/",
-  },
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: siteUrl,
@@ -51,12 +50,7 @@ export const metadata: Metadata = {
     title,
     description,
     images: [
-      {
-        url: ogImage, // served from /public
-        width: 1200,
-        height: 630,
-        alt: "BudMeet — IRL Social App",
-      },
+      { url: ogImage, width: 1200, height: 630, alt: "BudMeet — IRL Social App" },
     ],
   },
   twitter: {
@@ -68,24 +62,17 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-    },
+    googleBot: { index: true, follow: true },
   },
-  // Optional icons (ensure files exist in /public)
   icons: {
-    icon: [
-      { url: "/favicon.ico" },
-      { url: "/icon.png", type: "image/png", sizes: "32x32" },
-    ],
+    icon: [{ url: "/favicon.ico" }, { url: "/icon.png", type: "image/png", sizes: "32x32" }],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
   category: "social",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // JSON-LD for SoftwareApplication (structured data)
+  // JSON-LD (SoftwareApplication)
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -95,15 +82,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     operatingSystem: "iOS, Android",
     applicationCategory: "SocialNetworking",
     genre: "Social, Vibe Matching, Local Connections",
-    offers: {
-      "@type": "Offer",
-      price: "0", // update if paid
-      priceCurrency: "USD",
-    },
-    sameAs: [
-      "https://www.instagram.com/budmeet.app/",
-      // add other official profiles when live (Twitter, LinkedIn, etc.)
-    ],
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    sameAs: ["https://www.instagram.com/budmeet.app/"],
   };
 
   return (
@@ -115,13 +95,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <body className="min-h-dvh min-h-screen flex flex-col bg-[#0B0F14] text-white antialiased">
+
+      {/* 
+        overflow-x-clip prevents any child (e.g., 3D Canvas / glows) from creating a right gutter.
+        Safe-area padding avoids weird visual margins on iOS notched devices.
+      */}
+      <body
+        className="min-h-screen flex flex-col bg-[#0B0F14] text-white antialiased overflow-x-clip"
+        style={{
+          paddingLeft: "env(safe-area-inset-left)",
+          paddingRight: "env(safe-area-inset-right)",
+        }}
+      >
         <div className="sticky top-0 z-[9999] border-b border-white/10 bg-[#0B0F14]/70 backdrop-blur supports-[backdrop-filter]:bg-[#0B0F14]/60">
           <Header />
         </div>
-        <main className="flex-1 flex flex-col [&>*:last-child]:mb-0 [&>*:last-child]:pb-0">
+
+        {/* Wrap main in a clip to contain wide decorative layers */}
+        <main className="relative flex-1 flex flex-col overflow-x-clip [&>*:last-child]:mb-0 [&>*:last-child]:pb-0">
           {children}
         </main>
+
         <AdvancedFooter />
       </body>
     </html>
