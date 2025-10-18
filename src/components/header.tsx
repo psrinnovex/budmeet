@@ -1,3 +1,4 @@
+// components/header.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -6,7 +7,6 @@ import { ArrowRight, Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-// Brand palette
 const BRAND = {
   bg: "#0B0F14",
   green: "#16DB65",
@@ -18,18 +18,21 @@ const easeOutExpo = cubicBezier(0.16, 1, 0.3, 1);
 
 const fadeInDown: MotionProps = {
   initial: { y: -20, opacity: 0 },
-  animate: {
-    y: 0,
-    opacity: 1,
-    transition: { duration: 0.6, ease: easeOutExpo },
-  },
+  animate: { y: 0, opacity: 1, transition: { duration: 0.6, ease: easeOutExpo } },
 };
 
 export default function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#0B0F14]/80 backdrop-blur">
+    <header
+      className="
+        sticky top-0 z-50 w-full max-w-[100vw]
+        border-b border-white/10 bg-[#0B0F14]/80 backdrop-blur
+        overflow-x-clip
+      "
+      style={{ contain: "layout paint" }}
+    >
       {/* Thin gradient progress/brand bar */}
       <div
         className="h-0.5 w-full"
@@ -40,12 +43,14 @@ export default function Header() {
 
       <motion.div
         {...fadeInDown}
-        className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:py-4"
+        className="
+          mx-auto flex w-full max-w-7xl items-center justify-between
+          px-4 py-3 md:py-4
+        "
       >
         {/* Left: Logo + Name */}
-        <Link href="/" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3 min-w-0">
           <div className="grid h-9 w-9 place-items-center rounded-xl bg-white/5 ring-1 ring-white/10">
-            {/* From /public/BM_logo.png */}
             <Image
               src="/BM_logo.png"
               alt="BudMeet"
@@ -55,7 +60,7 @@ export default function Header() {
               className="h-10 w-10 object-contain"
             />
           </div>
-          <span className="text-base font-bold tracking-tight text-white">
+          <span className="truncate text-base font-bold tracking-tight text-white">
             BudMeet
           </span>
         </Link>
@@ -98,51 +103,30 @@ export default function Header() {
         </button>
       </motion.div>
 
-      {/* Mobile sheet */}
+      {/* Mobile sheet (clipped, cannot exceed 100vw) */}
       <motion.div
         initial={false}
         animate={open ? "open" : "closed"}
         variants={{
-          open: {
-            height: "auto",
-            opacity: 1,
-            transition: { duration: 0.35, ease: easeOutExpo },
-          },
-          closed: {
-            height: 0,
-            opacity: 0,
-            transition: { duration: 0.25, ease: easeOutExpo },
-          },
+          open: { height: "auto", opacity: 1, transition: { duration: 0.35, ease: easeOutExpo } },
+          closed: { height: 0, opacity: 0, transition: { duration: 0.25, ease: easeOutExpo } },
         }}
-        className="overflow-hidden border-t border-white/10 bg-[#0B0F14]/90 backdrop-blur md:hidden"
+        className="
+          overflow-hidden overflow-x-clip
+          border-t border-white/10 bg-[#0B0F14]/90 backdrop-blur md:hidden
+        "
       >
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3 text-white/90">
-          <Link
-            href="#about"
-            onClick={() => setOpen(false)}
-            className="rounded-lg px-2 py-2 hover:bg-white/5"
-          >
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 px-4 py-3 text-white/90">
+          <Link href="#about" onClick={() => setOpen(false)} className="rounded-lg px-2 py-2 hover:bg-white/5">
             About
           </Link>
-          <Link
-            href="#features"
-            onClick={() => setOpen(false)}
-            className="rounded-lg px-2 py-2 hover:bg-white/5"
-          >
+          <Link href="#features" onClick={() => setOpen(false)} className="rounded-lg px-2 py-2 hover:bg-white/5">
             Features
           </Link>
-          <Link
-            href="#working"
-            onClick={() => setOpen(false)}
-            className="rounded-lg px-2 py-2 hover:bg-white/5"
-          >
+          <Link href="#working" onClick={() => setOpen(false)} className="rounded-lg px-2 py-2 hover:bg-white/5">
             Working
           </Link>
-          <Link
-            href="#safety_privacy"
-            onClick={() => setOpen(false)}
-            className="rounded-lg px-2 py-2 hover:bg-white/5"
-          >
+          <Link href="#safety_privacy" onClick={() => setOpen(false)} className="rounded-lg px-2 py-2 hover:bg-white/5">
             Safety&Privacy
           </Link>
           <Link

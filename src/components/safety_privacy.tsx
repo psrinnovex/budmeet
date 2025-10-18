@@ -16,19 +16,22 @@ import Link from "next/link";
 
 /**
  * BudMeet — Safety & Privacy, By Design
- * - Calm glass panels + rotating 3D lock vignette
- * - Plain-language policy highlights (on-device checks, location privacy, block/report, audits)
- * - CTA: "Read our Safety Playbook"
- * - Tailwind v4 friendly
  */
 
 const ease = cubicBezier(0.22, 1, 0.36, 1);
 
 export default function SafetyPrivacySection() {
   return (
-    <section id="safety_privacy" className="relative isolate py-20 md:py-28">
-      {/* soft gradient aura */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_70%_20%,rgba(34,211,238,0.10),transparent_60%),radial-gradient(40%_40%_at_20%_80%,rgba(147,197,253,0.10),transparent_60%)]" />
+    <section
+      id="safety_privacy"
+      className="
+        relative isolate w-full max-w-[100vw]
+        overflow-x-clip py-20 md:py-28
+      "
+      style={{ contain: "layout paint" }}
+    >
+      {/* soft gradient aura (clipped) */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-x-clip bg-[radial-gradient(60%_50%_at_70%_20%,rgba(34,211,238,0.10),transparent_60%),radial-gradient(40%_40%_at_20%_80%,rgba(147,197,253,0.10),transparent_60%)]" />
 
       <div className="mx-auto max-w-6xl px-6">
         <div className="grid items-center gap-10 md:grid-cols-2">
@@ -79,7 +82,7 @@ export default function SafetyPrivacySection() {
               />
             </ul>
 
-            {/* Audit partner badges (placeholder tags that can be swapped with logos in /public) */}
+            {/* Audit partner badges */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -121,7 +124,12 @@ export default function SafetyPrivacySection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease }}
-            className="relative aspect-[4/4] w-full overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/30 shadow-2xl ring-1 ring-white/10 backdrop-blur-xl"
+            className="
+              relative aspect-square w-full
+              overflow-hidden overflow-x-clip
+              rounded-3xl border border-white/10 bg-zinc-900/30 shadow-2xl ring-1 ring-white/10 backdrop-blur-xl
+              max-w-[100vw]
+            "
           >
             <Suspense fallback={<CanvasFallback />}>
               <LockScene />
@@ -174,7 +182,11 @@ function GlassItem({
 /* ------------------------------- 3D Scene ------------------------------- */
 function LockScene() {
   return (
-    <Canvas camera={{ position: [0.6, 0.9, 2.6], fov: 32 }} dpr={[1, 2]}>
+    <Canvas
+      camera={{ position: [0.6, 0.9, 2.6], fov: 32 }}
+      dpr={[1, 2]}
+      className="!block w-full h-full"
+    >
       {/* Auto-fit the contents inside the canvas */}
       <Bounds fit clip observe margin={1.1}>
         <Center disableZ>

@@ -86,19 +86,25 @@ export default function AdvancedFooter({
   const [locale, setLocale] = useState(locales[0] ?? "English (US)");
 
   return (
-    <footer className="relative w-full bg-transparent">
-      {/* FULL-WIDTH FX BACKDROP (subtle grid + beams) */}
-      <div className="pointer-events-none absolute inset-0">
-        {/* gradient beams */}
+    <footer
+      className="
+        relative w-full max-w-[100vw]
+        overflow-x-clip bg-transparent
+      "
+      style={{ contain: "layout paint" }}
+    >
+      {/* FX BACKDROP — CLIPPED */}
+      <div className="pointer-events-none absolute inset-0 overflow-x-clip">
+        {/* gradient beams (kept inside clipping region) */}
         <div
-          className="absolute -top-24 left-1/3 h-72 w-72 translate-x-[-50%] rounded-full opacity-30 blur-3xl"
+          className="absolute -top-24 left-1/3 h-72 w-72 -translate-x-1/2 rounded-full opacity-30 blur-3xl"
           style={{
             background:
               "radial-gradient(60% 60% at 50% 50%, rgba(45,212,191,0.25) 0%, rgba(59,130,246,0.08) 60%, transparent 80%)",
           }}
         />
         <div
-          className="absolute -bottom-24 right-1/4 h-72 w-72 translate-x-[50%] rounded-full opacity-30 blur-3xl"
+          className="absolute -bottom-24 right-1/4 h-72 w-72 translate-x-1/2 rounded-full opacity-30 blur-3xl"
           style={{
             background:
               "radial-gradient(60% 60% at 50% 50%, rgba(34,211,238,0.25) 0%, rgba(16,185,129,0.08) 60%, transparent 80%)",
@@ -116,8 +122,8 @@ export default function AdvancedFooter({
         />
       </div>
 
-      {/* CONTENT WRAPPER — full width */}
-      <div className="relative w-full">
+      {/* CONTENT WRAPPER — full width, CLIPPED */}
+      <div className="relative w-full overflow-x-clip">
         {/* FULL-BLEED GLASS STRIP */}
         <motion.div
           initial={{ opacity: 0, y: 18 }}
@@ -126,10 +132,10 @@ export default function AdvancedFooter({
           className="mt-20 mb-0 overflow-hidden rounded-none border-y border-zinc-800/40 bg-zinc-900/60 shadow-[0_10px_60px_-20px_rgba(0,0,0,0.6)] backdrop-blur-xl"
         >
           {/* TOP ROW: Brand + badges + socials */}
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="py-8 lg:py-12">
               <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-                <div className="flex items-center gap-4">
+                <div className="flex min-w-0 items-center gap-4">
                   <Link href={brand.href ?? "/"} className="flex items-center gap-3">
                     <span className="grid h-10 w-10 place-items-center overflow-hidden rounded-lg bg-white/5 ring-1 ring-white/10">
                       <Image
@@ -141,26 +147,30 @@ export default function AdvancedFooter({
                         priority={false}
                       />
                     </span>
-                    <span className="text-xl font-semibold text-zinc-100">
+                    <span className="truncate text-xl font-semibold text-zinc-100">
                       {brand.name}
                     </span>
                   </Link>
                   <span className="hidden h-5 w-px bg-zinc-700/50 md:inline-block" />
-                  <p className="max-w-xl text-sm text-zinc-400">{brand.tagline}</p>
+                  <p className="max-w-xl shrink text-sm text-zinc-400">{brand.tagline}</p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
                   {appBadges.map((b) => {
                     const isInternal = b.href.startsWith("/") || b.href.startsWith("#");
-                    const badge = (
-                      <span className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-sm text-zinc-200 transition hover:bg-zinc-900/60">
+                    const badgeInner = (
+                      <>
                         <Image src={b.iconSrc} alt="" width={16} height={16} />
                         {b.label}
-                      </span>
+                      </>
                     );
                     return isInternal ? (
-                      <Link key={b.label} href={b.href} className="contents">
-                        {badge}
+                      <Link
+                        key={b.label}
+                        href={b.href}
+                        className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-sm text-zinc-200 transition hover:bg-zinc-900/60"
+                      >
+                        {badgeInner}
                       </Link>
                     ) : (
                       <a
@@ -170,8 +180,7 @@ export default function AdvancedFooter({
                         target="_blank"
                         rel="noreferrer"
                       >
-                        <Image src={b.iconSrc} alt="" width={16} height={16} />
-                        {b.label}
+                        {badgeInner}
                       </a>
                     );
                   })}
@@ -196,7 +205,7 @@ export default function AdvancedFooter({
           </div>
 
           {/* MIDDLE: Newsletter */}
-          <div className="mx-auto max-w-7xl px-6 pb-2 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 pb-2 lg:px-8">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
               <div className="md:col-span-7">
                 <h4 className="text-sm font-medium text-zinc-200">Stay in the loop</h4>
@@ -236,7 +245,7 @@ export default function AdvancedFooter({
           </div>
 
           {/* LINK COLUMNS */}
-          <div className="mx-auto max-w-7xl px-6 pt-6 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 pt-6 lg:px-8">
             {/* Desktop */}
             <div className="hidden grid-cols-2 gap-8 md:grid lg:grid-cols-4">
               {columns.map((col) => (
@@ -244,8 +253,7 @@ export default function AdvancedFooter({
                   <h4 className="text-sm font-medium text-zinc-200">{col.heading}</h4>
                   <ul className="mt-3 space-y-2 text-sm text-zinc-400">
                     {col.links.map((lnk) => {
-                      const isInternal =
-                        lnk.href.startsWith("/") || lnk.href.startsWith("#");
+                      const isInternal = lnk.href.startsWith("/") || lnk.href.startsWith("#");
                       return (
                         <li key={lnk.label}>
                           {isInternal ? (
@@ -279,14 +287,12 @@ export default function AdvancedFooter({
           </div>
 
           {/* BOTTOM ROW: locale + legal */}
-          <div className="mx-auto mt-8 flex flex-col gap-4 border-t border-zinc-800/40 px-6 py-6 md:flex-row md:items-center md:justify-between lg:px-8">
+          <div className="mx-auto mt-8 flex flex-col gap-4 border-t border-zinc-800/40 px-4 sm:px-6 py-6 md:flex-row md:items-center md:justify-between lg:px-8">
             <div className="flex items-center gap-3">
               <button
                 className="inline-flex items-center gap-2 rounded-md border border-zinc-700 bg-zinc-900/40 px-3 py-1.5 text-sm text-zinc-200"
                 onClick={() => {
-                  const next =
-                    locales[(locales.indexOf(locale) + 1) % locales.length] ??
-                    locale;
+                  const next = locales[(locales.indexOf(locale) + 1) % locales.length] ?? locale;
                   setLocale(next);
                 }}
                 aria-label="Change language / region"

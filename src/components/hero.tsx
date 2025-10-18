@@ -3,7 +3,6 @@
 import React from "react";
 import { motion, cubicBezier } from "framer-motion";
 import { ArrowRight, Sparkles, Users } from "lucide-react";
-// 3D
 import { Canvas } from "@react-three/fiber";
 import { Float, Sparkles as DreiSparkles } from "@react-three/drei";
 import Link from "next/link";
@@ -36,18 +35,16 @@ const item = {
 function Background3D() {
   return (
     <Canvas
-      className="absolute inset-0"
+      // keep it strictly inside its parent box
+      className="!block w-full h-full"
       dpr={[1, 1.5]}
       gl={{ antialias: true }}
       camera={{ position: [0, 0, 8], fov: 55 }}
     >
-      {/* Soft ambient */}
       <ambientLight intensity={0.35} />
-      {/* Tone lights */}
       <pointLight position={[6, 8, 6]} intensity={0.6} />
       <pointLight position={[-8, -6, -4]} intensity={0.4} />
 
-      {/* Floating sparkles cloud */}
       <Float speed={1.2} rotationIntensity={0.6} floatIntensity={0.6}>
         <DreiSparkles
           count={120}
@@ -58,7 +55,7 @@ function Background3D() {
           scale={[15, 8, 5]}
         />
       </Float>
-      {/* Second layer (green hue) */}
+
       <Float speed={0.9} rotationIntensity={0.4} floatIntensity={0.5}>
         <DreiSparkles
           count={90}
@@ -75,14 +72,20 @@ function Background3D() {
 
 export default function Hero() {
   return (
-    <section className="relative isolate overflow-hidden" style={{ backgroundColor: BRAND.bg }}>
-      {/* 3D background */}
-      <div className="pointer-events-none absolute inset-0">
+    <section
+      className="
+        relative isolate w-full max-w-[100vw]
+        overflow-x-clip overflow-y-visible
+      "
+      style={{ backgroundColor: BRAND.bg, contain: "layout paint" }}
+    >
+      {/* 3D background (clipped to section) */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-x-clip">
         <Background3D />
       </div>
 
-      {/* Gradient glows + grid overlay (kept subtle so 3D stays primary) */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
+      {/* Glows + grid overlays (also clipped) */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-x-clip">
         <div
           className="absolute -right-24 -top-24 h-[24rem] w-[24rem] blur-[90px] opacity-30 sm:h-[28rem] sm:w-[28rem] md:h-[32rem] md:w-[32rem]"
           style={{
@@ -178,17 +181,19 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Visual — SMALLER phone + animations */}
+          {/* Visual — phone */}
           <motion.div variants={item} className="relative">
             <motion.div
-              // gentle float animation
               initial={{ y: 0 }}
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              // tilt on hover/tap
               whileHover={{ rotateX: 6, rotateY: -6, scale: 1.02 }}
               whileTap={{ rotateX: -4, rotateY: 4, scale: 0.99 }}
-              className="relative mx-auto w-full max-w-[280px] sm:max-w-[330px] md:max-w-[380px] lg:max-w-[420px] will-change-transform"
+              className="
+                relative mx-auto w-full
+                max-w-[280px] sm:max-w-[330px] md:max-w-[380px] lg:max-w-[420px]
+                will-change-transform
+              "
             >
               {/* Glow ring */}
               <div
@@ -199,20 +204,17 @@ export default function Hero() {
                     "conic-gradient(from 180deg at 50% 50%, rgba(59,130,246,0.28), rgba(22,219,101,0.28), rgba(59,130,246,0.28))",
                 }}
               />
+
               {/* Device card */}
               <div className="relative rounded-[2rem] border border-white/10 bg-white/[0.04] p-2 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
-                {/* Screen bezel */}
                 <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-black/60 p-2">
-                  {/* Fixed phone aspect */}
                   <div className="relative mx-auto aspect-[9/19.5] w-full overflow-hidden rounded-[1.2rem]">
-                    {/* subtle shine sweep */}
                     <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-[1.2rem]">
                       <span className="absolute -left-1/3 top-0 h-full w-1/2 translate-x-[-120%] bg-gradient-to-r from-white/10 via-white/25 to-transparent blur-md will-change-transform [animation:shine_6s_linear_infinite]" />
                     </span>
 
-                    {/* Screen image (optimized) */}
                     <Image
-                      src="/budmeet-home.jpg" // ensure file exists in /public
+                      src="/budmeet-home.jpg"
                       alt="BudMeet app preview"
                       fill
                       sizes="(max-width: 640px) 90vw, (max-width: 1024px) 40vw, 420px"
@@ -230,15 +232,9 @@ export default function Hero() {
       {/* CSS keyframes (shine) */}
       <style jsx global>{`
         @keyframes shine {
-          0% {
-            transform: translateX(-120%);
-          }
-          50% {
-            transform: translateX(120%);
-          }
-          100% {
-            transform: translateX(120%);
-          }
+          0% { transform: translateX(-120%); }
+          50% { transform: translateX(120%); }
+          100% { transform: translateX(120%); }
         }
         @media (prefers-reduced-motion: reduce) {
           [style*="animation"], .will-change-transform {

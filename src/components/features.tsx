@@ -15,14 +15,6 @@ import Image from "next/image";
 
 /* -------------------------------------------------------------
    BudMeet — Features (image-led, minimal copy)
-   - Keep the Neon Aurora 3D background exactly as-is.
-   - Replace the image src paths with your IG assets if needed:
-       /public/marketing/feat-instant-nearby.jpg
-       /public/marketing/feat-real-vibes.jpg
-       /public/marketing/feat-memories.jpg
-       /public/marketing/feat-groups.jpg
-       /public/marketing/feat-categories.jpg
-       /public/marketing/feat-verified.jpg
 ---------------------------------------------------------------- */
 
 const BRAND = {
@@ -36,12 +28,19 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="relative isolate overflow-hidden"
-      style={{ backgroundColor: BRAND.bg }}
+      className="
+        relative isolate w-full max-w-[100vw]
+        overflow-x-clip overflow-y-visible
+      "
+      style={{ backgroundColor: BRAND.bg, contain: "layout paint" }}
     >
-      {/* 3D BACKGROUND (unchanged) */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <Canvas dpr={[1, 1.6]} camera={{ position: [0, 0, 14], fov: 52 }}>
+      {/* 3D BACKGROUND (unchanged, but CLIPPED) */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-x-clip">
+        <Canvas
+          dpr={[1, 1.6]}
+          camera={{ position: [0, 0, 14], fov: 52 }}
+          className="!block w-full h-full"
+        >
           <Suspense fallback={null}>
             <SceneAurora />
           </Suspense>
@@ -106,7 +105,7 @@ function ImageFeature({
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl">
       <div className="relative aspect-[4/4] w-full">
-        {/* Use next/image for LCP + bandwidth wins */}
+        {/* Next/Image keeps sizing inside container */}
         <Image
           src={src}
           alt={title}
@@ -125,7 +124,7 @@ function ImageFeature({
   );
 }
 
-/* ===================== 3D SCENE (unchanged) ===================== */
+/* ===================== 3D SCENE (unchanged visuals) ===================== */
 
 function SceneAurora() {
   const energy = 1.0;
@@ -133,22 +132,10 @@ function SceneAurora() {
   return (
     <>
       <color attach="background" args={[BRAND.bg]} />
-      <Stars
-        radius={80}
-        depth={30}
-        count={3200}
-        factor={2.2}
-        saturation={0}
-        fade
-        speed={0.6}
-      />
+      <Stars radius={80} depth={30} count={3200} factor={2.2} saturation={0} fade speed={0.6} />
       <ambientLight intensity={0.45} />
       <pointLight position={[8, 10, 12]} intensity={0.75} color={BRAND.blue} />
-      <pointLight
-        position={[-10, -8, -12]}
-        intensity={0.55}
-        color={BRAND.green}
-      />
+      <pointLight position={[-10, -8, -12]} intensity={0.55} color={BRAND.green} />
 
       <AuroraRibbon
         position={[0, 1.4, -2]}
@@ -182,18 +169,8 @@ function SceneAurora() {
       />
 
       <OrbitNode color={BRAND.green} radius={4.8} speed={0.8 * energy} />
-      <OrbitNode
-        color={BRAND.blue}
-        radius={6.0}
-        speed={-0.7 * energy}
-        phase={Math.PI / 3}
-      />
-      <OrbitNode
-        color={BRAND.green}
-        radius={7.2}
-        speed={0.6 * energy}
-        phase={Math.PI / 1.6}
-      />
+      <OrbitNode color={BRAND.blue} radius={6.0} speed={-0.7 * energy} phase={Math.PI / 3} />
+      <OrbitNode color={BRAND.green} radius={7.2} speed={0.6 * energy} phase={Math.PI / 1.6} />
 
       <Environment preset="city" />
       <Html position={[0, -6.5, 0]} center wrapperClass="sr-only">
@@ -271,13 +248,7 @@ function OrbitNode({
   });
 
   return (
-    <Trail
-      width={0.14}
-      color={new THREE.Color(color)}
-      length={26}
-      decay={0.8}
-      attenuation={(w) => w}
-    >
+    <Trail width={0.14} color={new THREE.Color(color)} length={26} decay={0.8} attenuation={(w) => w}>
       <mesh ref={ref}>
         <sphereGeometry args={[0.22, 24, 24]} />
         <meshStandardMaterial

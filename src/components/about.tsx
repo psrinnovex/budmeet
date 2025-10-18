@@ -1,5 +1,5 @@
-// app/about.tsx (or wherever you import it from)
-// "use client" required because of framer-motion, @react-three/fiber, and ResizeObserver.
+// app/about.tsx (or components/about.tsx)
+// "use client";
 "use client";
 
 import React, {
@@ -51,17 +51,9 @@ function particlesForArea(w: number, h: number): number {
 }
 
 /* --------------------------- 3D Scene Pieces --------------------------- */
-type GalaxyParticlesProps = {
-  count?: number;
-  radius?: number;
-  heightSpread?: number;
-};
+type GalaxyParticlesProps = { count?: number; radius?: number; heightSpread?: number };
 
-function GalaxyParticles({
-  count = 1600,
-  radius = 9,
-  heightSpread = 2.8,
-}: GalaxyParticlesProps) {
+function GalaxyParticles({ count = 1600, radius = 9, heightSpread = 2.8 }: GalaxyParticlesProps) {
   const ref = useRef<THREE.Points>(null!);
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
@@ -175,9 +167,14 @@ export default function AboutBudMeet() {
       ref={sectionRef}
       aria-labelledby="about-budmeet"
       id="about"
-      className="relative z-0 w-full overflow-hidden bg-[#04070B] text-white"
+      className="
+        relative z-0 w-full max-w-[100vw]
+        overflow-x-clip overflow-y-visible /* <- guard against horizontal gutter */
+        bg-[#04070B] text-white
+      "
+      style={{ contain: "layout paint" }} /* helps keep effects contained */
     >
-      <div className="relative mx-auto max-w-5xl px-6 py-24">
+      <div className="relative mx-auto max-w-screen-xl px-4 sm:px-6 py-24">
         <div className="mb-12 text-center">
           <h2 id="about-budmeet" className="text-3xl font-bold tracking-tight">
             About <span className="text-white/80">BudMeet</span>
@@ -208,6 +205,7 @@ export default function AboutBudMeet() {
               bg-white/[0.06] backdrop-blur-xl
               shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]
               p-8
+              overflow-hidden /* ensure inner glows don't expand layout */
             "
           >
             <span className="pointer-events-none absolute -top-7 -left-7 h-24 w-24 rounded-full bg-cyan-400/10 blur-2xl" />
@@ -234,11 +232,17 @@ export default function AboutBudMeet() {
         </motion.div>
       </div>
 
-      {/* 3D background sized to the section */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <Canvas dpr={[1, 1.25]} camera={{ position: [0, 0, 8], fov: 55 }}>
+      {/* 3D background sized & CLIPPED to the section */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-x-clip">
+        <Canvas
+          dpr={[1, 1.25]}
+          camera={{ position: [0, 0, 8], fov: 55 }}
+          className="!block w-full h-full"
+        >
           <Scene sectionWidth={size.width} sectionHeight={size.height} />
         </Canvas>
+
+        {/* These overlays are inside the clipped layer, so they can’t widen the page */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(34,211,238,0.12),transparent_55%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(2,6,12,0)_0%,rgba(2,6,12,0.32)_30%,rgba(2,6,12,0.85)_100%)]" />
       </div>

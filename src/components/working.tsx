@@ -15,9 +15,6 @@ import Link from "next/link";
 
 /**
  * HowBudMeetWorks — Aurelia Premier+ (Bullets removed, higher polish)
- * - Executive glass panels, animated spec ridge, subtle parallax
- * - Split layout with numbered rail and semantic 3D minis
- * - Tailwind v4 friendly
  */
 
 const ease = cubicBezier(0.22, 1, 0.36, 1);
@@ -59,7 +56,11 @@ function useParallax() {
 // ---------------- Tiny 3D canvas ----------------
 function TinyCanvas({ children }: { children: React.ReactNode }) {
   return (
-    <Canvas camera={{ position: [0, 0, 2.5], fov: 50 }} dpr={[1, 2]}>
+    <Canvas
+      camera={{ position: [0, 0, 2.5], fov: 50 }}
+      dpr={[1, 2]}
+      className="!block w-full h-full"    
+    >
       <ambientLight intensity={0.55} />
       <directionalLight position={[3, 3, 3]} intensity={1.0} />
       <Suspense fallback={null}>{children}</Suspense>
@@ -226,7 +227,7 @@ function StepCard({ s, i }: { s: Step; i: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.45 }}
       transition={{ duration: 0.5, ease, delay: i * 0.04 }}
-      className="relative"
+      className="relative overflow-x-clip"    
       role="listitem"
     >
       <motion.div
@@ -285,7 +286,7 @@ function StepCard({ s, i }: { s: Step; i: number }) {
           />
         </article>
 
-        {/* Hover aura */}
+        {/* Hover aura (now safely clipped by li) */}
         <motion.div
           aria-hidden
           className="pointer-events-none absolute -inset-10 -z-10 rounded-[36px] opacity-0 blur-2xl transition-opacity group-hover:opacity-100"
@@ -337,24 +338,33 @@ function SectionHeader() {
 // ---------------- Main ----------------
 export default function HowBudMeetWorksSection() {
   return (
-    <section id="working" className="relative mx-auto max-w-7xl px-4 py-24 text-white">
-      <SectionHeader />
+    <section
+      id="working"
+      className="
+        relative mx-auto w-full max-w-[100vw]
+        overflow-x-clip px-4 py-24 text-white
+      "
+      style={{ contain: "layout paint" }}
+    >
+      <div className="mx-auto max-w-7xl">
+        <SectionHeader />
 
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-[120px_1fr]">
-        {/* Index rail */}
-        <div className="sticky top-24 hidden h-[560px] md:block">
-          <div className="relative mx-auto h-full w-[2px] bg-white/10">
-            <div className="absolute left-1/2 top-0 h-6 w-[2px] -translate-x-1/2 bg-white/40" />
-            <div className="absolute left-1/2 bottom-0 h-6 w-[2px] -translate-x-1/2 bg-white/40" />
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-[120px_1fr]">
+          {/* Index rail */}
+          <div className="sticky top-24 hidden h-[560px] max-w-[100vw] md:block">
+            <div className="relative mx-auto h-full w-[2px] bg-white/10">
+              <div className="absolute left-1/2 top-0 h-6 w-[2px] -translate-x-1/2 bg-white/40" />
+              <div className="absolute left-1/2 bottom-0 h-6 w-[2px] -translate-x-1/2 bg-white/40" />
+            </div>
           </div>
-        </div>
 
-        {/* Steps (no bullets) */}
-        <ol className="grid grid-cols-1 gap-7" role="list">
-          {STEPS.map((s, i) => (
-            <StepCard key={s.k} s={s} i={i} />
-          ))}
-        </ol>
+          {/* Steps (no bullets) */}
+          <ol className="grid grid-cols-1 gap-7 overflow-x-clip" role="list">
+            {STEPS.map((s, i) => (
+              <StepCard key={s.k} s={s} i={i} />
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   );
