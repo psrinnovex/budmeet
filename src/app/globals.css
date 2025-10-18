@@ -28,4 +28,33 @@
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
   }
-  
+  /* Shine sweep used in Hero device mock */
+@keyframes shine {
+  0% { transform: translateX(-120%); }
+  50% { transform: translateX(120%); }
+  100% { transform: translateX(120%); }
+}
+.animate-shine {
+  animation: shine 6s linear infinite;
+}
+
+/* Respect reduced motion globally */
+@media (prefers-reduced-motion: reduce) {
+  .will-change-transform,
+  [class*="animate-"] {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+
+  /* Motion-reduce fallback used by sections (including Features) */
+@media (prefers-reduced-motion: reduce) {
+  canvas,
+  [style*="animation"],
+  [class*="animate"],
+  [class*="transition"] {
+    animation: none !important;
+    transition: none !important;
+  }
+}

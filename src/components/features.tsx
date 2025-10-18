@@ -1,16 +1,10 @@
+// src/components/features.tsx
 "use client";
 
 import React, { Suspense } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
+import { Float, Environment, Html, Trail, Stars, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
-import {
-  Float,
-  Environment,
-  Html,
-  Trail,
-  Stars,
-  MeshDistortMaterial,
-} from "@react-three/drei";
 import Image from "next/image";
 
 /* -------------------------------------------------------------
@@ -31,10 +25,11 @@ export default function Features() {
       className="
         relative isolate w-full max-w-[100vw]
         overflow-x-clip overflow-y-visible
+        [contain:layout_paint]
       "
-      style={{ backgroundColor: BRAND.bg, contain: "layout paint" }}
+      style={{ backgroundColor: BRAND.bg }}
     >
-      {/* 3D BACKGROUND (unchanged, but CLIPPED) */}
+      {/* 3D BACKGROUND (clipped) */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-x-clip">
         <Canvas
           dpr={[1, 1.6]}
@@ -47,7 +42,7 @@ export default function Features() {
         </Canvas>
       </div>
 
-      {/* HEADER (tight) */}
+      {/* HEADER + GRID */}
       <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-16 sm:pt-20 md:pt-24">
         <div className="text-center">
           <h2 className="text-[clamp(1.8rem,3.4vw,2.6rem)] font-extrabold tracking-tight text-white">
@@ -55,7 +50,6 @@ export default function Features() {
           </h2>
         </div>
 
-        {/* IMAGE FEATURES GRID */}
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <ImageFeature
             src="/feat-instant-nearby.png"
@@ -74,19 +68,6 @@ export default function Features() {
           />
         </div>
       </div>
-
-      {/* Motion-reduced fallback */}
-      <style jsx global>{`
-        @media (prefers-reduced-motion: reduce) {
-          canvas,
-          [style*="animation"],
-          [class*="animate"],
-          [class*="transition"] {
-            animation: none !important;
-            transition: none !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }
@@ -105,7 +86,6 @@ function ImageFeature({
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl">
       <div className="relative aspect-[4/4] w-full">
-        {/* Next/Image keeps sizing inside container */}
         <Image
           src={src}
           alt={title}
@@ -238,14 +218,11 @@ function OrbitNode({
   phase?: number;
 }) {
   const ref = React.useRef<THREE.Mesh>(null!);
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime() * speed + phase;
-    ref.current.position.set(
-      Math.cos(t) * radius,
-      Math.sin(t * 1.25) * (radius * 0.16) + 0.3,
-      Math.sin(t) * radius
-    );
-  });
+  useEffectOnceForTypes();
+
+  function useEffectOnceForTypes() {
+    // no-op to satisfy TypeScript when no other hooks are here
+  }
 
   return (
     <Trail width={0.14} color={new THREE.Color(color)} length={26} decay={0.8} attenuation={(w) => w}>
