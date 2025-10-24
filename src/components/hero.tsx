@@ -1,12 +1,14 @@
+// src/components/hero.tsx
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion, cubicBezier } from "framer-motion";
 import { ArrowRight, Sparkles, Users } from "lucide-react";
 import { Canvas } from "@react-three/fiber";
 import { Float, Sparkles as DreiSparkles } from "@react-three/drei";
 import Link from "next/link";
 import Image from "next/image";
+import LaunchingSoonModal from "@/components/LaunchingSoonModal"; // ← reuse the modal
 
 const BRAND = {
   bg: "#0B0F14",
@@ -19,7 +21,11 @@ const easeOutExpo = cubicBezier(0.16, 1, 0.3, 1);
 
 const container = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOutExpo, staggerChildren: 0.08 } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: easeOutExpo, staggerChildren: 0.08 },
+  },
 };
 
 const item = {
@@ -39,16 +45,32 @@ function Background3D() {
       <pointLight position={[6, 8, 6]} intensity={0.6} />
       <pointLight position={[-8, -6, -4]} intensity={0.4} />
       <Float speed={1.2} rotationIntensity={0.6} floatIntensity={0.6}>
-        <DreiSparkles count={120} size={2} speed={0.35} color={BRAND.blue} opacity={0.3} scale={[15, 8, 5]} />
+        <DreiSparkles
+          count={120}
+          size={2}
+          speed={0.35}
+          color={BRAND.blue}
+          opacity={0.3}
+          scale={[15, 8, 5]}
+        />
       </Float>
       <Float speed={0.9} rotationIntensity={0.4} floatIntensity={0.5}>
-        <DreiSparkles count={90} size={1.8} speed={0.25} color={BRAND.green} opacity={0.25} scale={[12, 7, 5]} />
+        <DreiSparkles
+          count={90}
+          size={1.8}
+          speed={0.25}
+          color={BRAND.green}
+          opacity={0.25}
+          scale={[12, 7, 5]}
+        />
       </Float>
     </Canvas>
   );
 }
 
 export default function Hero() {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <section
       className="
@@ -67,11 +89,17 @@ export default function Hero() {
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-x-clip">
         <div
           className="absolute -right-24 -top-24 h-[24rem] w-[24rem] blur-[90px] opacity-30 sm:h-[28rem] sm:w-[28rem] md:h-[32rem] md:w-[32rem]"
-          style={{ background: "radial-gradient(50% 50% at 50% 50%, rgba(59,130,246,0.5) 0%, rgba(59,130,246,0.0) 70%)" }}
+          style={{
+            background:
+              "radial-gradient(50% 50% at 50% 50%, rgba(59,130,246,0.5) 0%, rgba(59,130,246,0.0) 70%)",
+          }}
         />
         <div
           className="absolute -left-24 bottom-[-8rem] h-[26rem] w-[26rem] blur-[100px] opacity-30 sm:h-[30rem] sm:w-[30rem] md:h-[34rem] md:w-[34rem]"
-          style={{ background: "radial-gradient(50% 50% at 50% 50%, rgba(22,219,101,0.5) 0%, rgba(22,219,101,0.0) 70%)" }}
+          style={{
+            background:
+              "radial-gradient(50% 50% at 50% 50%, rgba(22,219,101,0.5) 0%, rgba(22,219,101,0.0) 70%)",
+          }}
         />
         <div className="absolute inset-0 opacity-[0.06] [mask-image:radial-gradient(60%_60%_at_50%_40%,#000_60%,transparent_100%)]">
           <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
@@ -111,25 +139,41 @@ export default function Hero() {
               className="text-[clamp(1.9rem,3.6vw,3.5rem)] font-extrabold leading-[1.05] tracking-tight text-white"
             >
               Meet people who{" "}
-              <span className="bg-clip-text text-transparent" style={{ backgroundImage: `linear-gradient(90deg, ${BRAND.green}, ${BRAND.blue})` }}>
+              <span
+                className="bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: `linear-gradient(90deg, ${BRAND.green}, ${BRAND.blue})`,
+                }}
+              >
                 actually get you
               </span>
               .
             </motion.h1>
 
-            <motion.p variants={item} className="max-w-xl text-[clamp(0.98rem,1.2vw,1.125rem)] leading-relaxed text-white/70">
+            <motion.p
+              variants={item}
+              className="max-w-xl text-[clamp(0.98rem,1.2vw,1.125rem)] leading-relaxed text-white/70"
+            >
               BudMeet connects you to real-world hangouts powered by smart matching:
               interests, energy, and timing. Less scrolling, more living.
             </motion.p>
 
             <motion.div variants={item} className="flex flex-col gap-3 sm:flex-row">
+              {/* Get the App -> open modal */}
               <Link
                 href="#download"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setModalOpen(true);
+                }}
                 className="group inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-white backdrop-blur transition hover:bg-white/20"
+                aria-haspopup="dialog"
+                aria-expanded={modalOpen}
               >
                 Get the App
                 <ArrowRight className="h-4 w-4 -translate-x-0 transition group-hover:translate-x-0.5" />
               </Link>
+
               <Link
                 href="#working"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-transparent px-4 py-2.5 text-white/80 transition hover:text-white"
@@ -138,7 +182,10 @@ export default function Hero() {
               </Link>
             </motion.div>
 
-            <motion.div variants={item} className="flex items-center gap-6 pt-2 text-xs text-white/60">
+            <motion.div
+              variants={item}
+              className="flex items-center gap-6 pt-2 text-xs text-white/60"
+            >
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 <span>Built for IRL connections</span>
@@ -162,7 +209,10 @@ export default function Hero() {
               <div
                 aria-hidden
                 className="pointer-events-none absolute -inset-5 rounded-[2rem] opacity-60 blur-2xl sm:-inset-6"
-                style={{ background: "conic-gradient(from 180deg at 50% 50%, rgba(59,130,246,0.28), rgba(22,219,101,0.28), rgba(59,130,246,0.28))" }}
+                style={{
+                  background:
+                    "conic-gradient(from 180deg at 50% 50%, rgba(59,130,246,0.28), rgba(22,219,101,0.28), rgba(59,130,246,0.28))",
+                }}
               />
               {/* Device card */}
               <div className="relative rounded-[2rem] border border-white/10 bg-white/[0.04] p-2 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
@@ -186,6 +236,9 @@ export default function Hero() {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Modal Mount */}
+      <LaunchingSoonModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </section>
   );
 }

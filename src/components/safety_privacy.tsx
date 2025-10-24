@@ -54,31 +54,32 @@ export default function SafetyPrivacySection() {
               transition={{ duration: 0.6, ease, delay: 0.05 }}
               className="mt-3 max-w-prose text-zinc-400"
             >
-              Address the #1 adoption concern with transparent, on-device safety checks and
-              location-first privacy. Clear controls, quick reporting, and third-party audits—built in.
+              We built BudMeet to keep you safe without giving up control. On-device checks,
+              strict data minimization, and location-first privacy come standard. Clear controls,
+              fast reporting, and independent reviews are built in. No ads. No third-party trackers.
             </motion.p>
 
             {/* Glass highlight cards */}
             <ul className="mt-8 grid gap-4 sm:grid-cols-2">
               <GlassItem
-                icon={<ShieldCheck className="size-5" />}
+                icon={<ShieldCheck className="size-14 md:size-16" strokeWidth={2.2} />}
                 title="On-device checks"
-                text="Profile photo & liveness checks run locally before anything leaves your phone."
+                text="Basic photo & liveness checks run locally—nothing leaves your phone unless you approve."
               />
               <GlassItem
-                icon={<MapPin className="size-5" />}
+                icon={<MapPin className="size-14 md:size-16" strokeWidth={2.2} />}
                 title="Location privacy"
-                text="We show vibes, not exact pins. Precise GPS stays on your device unless you opt in."
+                text="We show areas and vibes. Precise GPS stays on-device unless you share a meet spot."
               />
               <GlassItem
-                icon={<Ban className="size-5" />}
+                icon={<Ban className="size-14 md:size-16" strokeWidth={2.2} />}
                 title="Block & report"
-                text="One-tap block/report with behind-the-scenes evidence capture to our safety team."
+                text="One-tap block/report with an optional evidence bundle sent securely to our safety team."
               />
               <GlassItem
-                icon={<FileCheck2 className="size-5" />}
+                icon={<FileCheck2 className="size-14 md:size-16" strokeWidth={2.2} />}
                 title="Independent audits"
-                text="Regular reviews by certified security partners with published summaries."
+                text="Regular reviews by certified security partners with public summaries in our Safety Playbook."
               />
             </ul>
 
@@ -90,32 +91,12 @@ export default function SafetyPrivacySection() {
               transition={{ duration: 0.6, ease, delay: 0.1 }}
               className="mt-6 flex flex-wrap items-center gap-3 text-xs text-zinc-400"
             >
-              <Badge>ISO 27001-aligned</Badge>
+              <Badge>End-to-end encryption</Badge>
               <Badge>OWASP ASVS</Badge>
               <Badge>Pen-tested</Badge>
               <Badge>Privacy by Default</Badge>
             </motion.div>
 
-            {/* CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 6 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, ease, delay: 0.15 }}
-              className="mt-8"
-            >
-              <Link
-                href="/safety-playbook"
-                className="inline-flex items-center gap-2 rounded-2xl bg-zinc-900/70 px-5 py-3 text-sm font-medium text-zinc-100 ring-1 ring-white/10 backdrop-blur-md transition hover:ring-cyan-400/40"
-                aria-label="Read our Safety Playbook"
-              >
-                Read our Safety Playbook
-                <svg aria-hidden className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M7 17L17 7" />
-                  <path d="M8 7h9v9" />
-                </svg>
-              </Link>
-            </motion.div>
           </div>
 
           {/* 3D lock vignette */}
@@ -167,7 +148,7 @@ function GlassItem({
       className="group rounded-2xl border border-white/10 bg-white/[0.04] p-4 shadow-sm ring-1 ring-white/10 backdrop-blur-xl hover:border-cyan-400/30 hover:ring-cyan-400/20"
     >
       <div className="flex items-start gap-3">
-        <div className="mt-0.5 grid size-9 place-items-center rounded-xl bg-white/5 ring-1 ring-white/10">
+      <div className="mt-0.5 grid size-20 md:size-16 place-items-center rounded-xl bg-transparent">
           <span className="text-cyan-300">{icon}</span>
         </div>
         <div>

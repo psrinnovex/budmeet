@@ -8,25 +8,36 @@ import AdvancedFooter from "@/components/footer";
 
 const siteName = "BudMeet";
 const siteUrl = "https://budmeet.app";
-const ogImage = "/og-image.png"; // ensure this exists (1200x630)
+const ogImage = "/og-image.png"; // 1200x630
 const title = "BudMeet — The Real-Life Social / Vibe Matching App";
 const description =
-  "BudMeet is a social app for real local meetups. No swipes, no fluff — just real connections in your city.";
+  "BudMeet is a social app for real local meetups. No swipes, no fluff — just real connections in your city. Launching soon by PSHR INNOVEX PVT LTD.";
 
+// ---- Viewport ----
 export const viewport: Viewport = {
-  themeColor: "#0B0F14",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0B0F14" },
+    { media: "(prefers-color-scheme: light)", color: "#0B0F14" },
+  ],
   width: "device-width",
   initialScale: 1,
-  viewportFit: "cover", // <- important on iOS to use full width without phantom gutters
+  viewportFit: "cover",
 };
 
+// ---- Global Metadata ----
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title,
+  title: {
+    default: title,
+    template: "%s — BudMeet", // page-level titles become “Page — BudMeet”
+  },
   description,
   applicationName: siteName,
+  generator: "Next.js",
+  referrer: "origin-when-cross-origin",
   keywords: [
     "BudMeet",
+    "PSHR INNOVEX PVT LTD",
     "social app",
     "meet people",
     "make friends",
@@ -40,8 +51,12 @@ export const metadata: Metadata = {
     "community building",
     "social networking",
     "event planning",
+    "launching soon",
   ],
-  authors: [{ name: "BudMeet" }],
+  authors: [{ name: "PSHR INNOVEX PVT LTD" }],
+  publisher: "PSHR INNOVEX PVT LTD",
+  creator: "PSHR INNOVEX PVT LTD",
+  category: "social",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -49,6 +64,7 @@ export const metadata: Metadata = {
     siteName,
     title,
     description,
+    locale: "en_US",
     images: [
       { url: ogImage, width: 1200, height: 630, alt: "BudMeet — IRL Social App" },
     ],
@@ -58,22 +74,81 @@ export const metadata: Metadata = {
     title,
     description,
     images: [ogImage],
+    creator: "@budmeet_app", // if you have one; otherwise remove
   },
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true },
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   icons: {
-    icon: [{ url: "/favicon.ico" }, { url: "/icon.png", type: "image/png", sizes: "32x32" }],
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+    ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    other: [
+      { rel: "mask-icon", url: "/safari-pinned-tab.svg", color: "#0B0F14" },
+    ],
   },
-  category: "social",
+  // PWA/manifest (optional but good)
+  manifest: "/site.webmanifest",
+  verification: {
+    // If you add these in the future:
+    // google: "GOOGLE_SITE_VERIFICATION_TOKEN",
+    // bing: "BING_VERIFICATION_CODE",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // JSON-LD (SoftwareApplication)
-  const jsonLd = {
+  // ======= JSON-LD =======
+  // 1) Organization (your company)
+  const orgLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "PSHR INNOVEX PVT LTD",
+    url: siteUrl,
+    logo: `${siteUrl}/icon.png`,
+    sameAs: [
+      "https://www.instagram.com/budmeet.app/",
+      // add official LinkedIn/Twitter/Facebook if available:
+      // "https://www.linkedin.com/company/pshr-innovex/",
+      // "https://twitter.com/budmeet_app",
+    ],
+    brand: {
+      "@type": "Brand",
+      name: "BudMeet",
+      url: siteUrl,
+      logo: `${siteUrl}/icon.png`,
+    },
+  };
+
+  // 2) WebSite + SearchAction
+  const siteLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: siteName,
+    url: siteUrl,
+    publisher: {
+      "@type": "Organization",
+      name: "PSHR INNOVEX PVT LTD",
+      url: siteUrl,
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/search?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
+  // 3) SoftwareApplication (launching soon hint via offers price=0)
+  const appLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "BudMeet",
@@ -83,23 +158,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     applicationCategory: "SocialNetworking",
     genre: "Social, Vibe Matching, Local Connections",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-    sameAs: ["https://www.instagram.com/budmeet.app/"],
+    // add “installUrl” when stores are live:
+    // installUrl: ["https://apps.apple.com/app/...", "https://play.google.com/store/apps/details?id=..."],
+    creator: { "@type": "Organization", name: "PSHR INNOVEX PVT LTD" },
+    // launch timeframe (optional note for crawlers/users; does not affect ranking)
+    releaseNotes: "Launching soon. Join the waitlist on the website.",
   };
 
   return (
     <html lang="en" className="h-full">
-      {/* Structured Data */}
-      <Script
-        id="ld-software-app"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      {/* Preconnects help performance for fonts/CDNs if used */}
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
 
-      {/* 
-        overflow-x-clip prevents any child (e.g., 3D Canvas / glows) from creating a right gutter.
-        Safe-area padding avoids weird visual margins on iOS notched devices.
-      */}
+      {/* Structured Data */}
+      <Script id="ld-org" type="application/ld+json" strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }} />
+      <Script id="ld-website" type="application/ld+json" strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(siteLd) }} />
+      <Script id="ld-software-app" type="application/ld+json" strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(appLd) }} />
+
       <body
         className="min-h-screen flex flex-col bg-[#0B0F14] text-white antialiased overflow-x-clip"
         style={{
@@ -111,7 +190,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
         </div>
 
-        {/* Wrap main in a clip to contain wide decorative layers */}
         <main className="relative flex-1 flex flex-col overflow-x-clip [&>*:last-child]:mb-0 [&>*:last-child]:pb-0">
           {children}
         </main>

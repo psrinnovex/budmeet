@@ -221,12 +221,11 @@ export default function AboutBudMeet() {
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.6, ease }}
-              className="text-pretty text-[16px]/8 tracking-[0.01em] text-white/90"
+              className="text-pretty text-justify text-[16px]/8 tracking-[0.01em] text-white/90"
             >
-              BudMeet is a next-gen social app that helps you meet the right people nearby—fast, safe, and real.
-              Built with a privacy-first philosophy and verified identities, it uses an intelligent vibe engine to
-              align interests and availability, turning spontaneous plans into meaningful, in-person connections—
-              while keeping you in control at every step.
+              BudMeet is a next-generation social discovery app built for the Gen Z era — where real connections matter more than endless swipes. 
+              It helps you find people nearby who share your vibe, whether that means grabbing a coffee, hitting the gym, studying together, or just hanging out in the moment. 
+              Unlike typical dating or chat apps, BudMeet is about authentic, real-world meetups powered by presence, mood, and shared energy — not algorithms that keep you scrolling.
             </motion.p>
           </div>
         </motion.div>

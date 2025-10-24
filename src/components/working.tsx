@@ -199,10 +199,30 @@ function Padlock3D() {
 // ---------------- Data ----------------
 type Step = { k: string; title: string; desc: string; Three: React.ComponentType };
 const STEPS: Step[] = [
-  { k: "01", title: "Create your vibe profile", desc: "Pick interests, set your vibe (introvert / ambivert / extrovert). Our AI tunes your discovery feed.", Three: ProfileGem3D },
-  { k: "02", title: "Instant matches nearby", desc: "We prioritize people around you by vibe similarity and intent. Tap to connect or pass.", Three: LinkRings3D },
-  { k: "03", title: "Vibe check & chat", desc: "Start with AI prompts, shared media, and mini-games for natural conversation.", Three: ChatBubbles3D },
-  { k: "04", title: "Meet IRL, safely", desc: "Safety by default: trusted contact, live check-ins, and location handoff at session end.", Three: Padlock3D },
+  {
+    k: "01",
+    title: "Create your vibe profile",
+    desc: "Pick interests and set your vibe (introvert / ambivert / extrovert). Your choices shape a personalized discovery feed.",
+    Three: ProfileGem3D,
+  },
+  {
+    k: "02",
+    title: "Instant matches nearby",
+    desc: "See people around you with similar energy and intent. It’s simple to tap connect or pass—no endless swiping.",
+    Three: LinkRings3D,
+  },
+  {
+    k: "03",
+    title: "Vibe check & chat",
+    desc: "Break the ice with quick prompts, shared photos, and lightweight mini-games for natural conversation.",
+    Three: ChatBubbles3D,
+  },
+  {
+    k: "04",
+    title: "Meet IRL, safely",
+    desc: "Safety by default: add a trusted contact, use live check-ins, and share exact location only when you decide.",
+    Three: Padlock3D,
+  },
 ];
 
 // ---------------- UI atoms ----------------
@@ -325,7 +345,7 @@ function SectionHeader() {
         viewport={{ once: true }}
         className={`mx-auto mt-4 max-w-2xl ${TOKENS.fgMuted}`}
       >
-        Four precise steps. Executive-level UX. Safety by default.
+        Four clear steps. Frictionless experience. Safety by default.
       </motion.p>
 
       <div className="mx-auto mt-8 w-60">

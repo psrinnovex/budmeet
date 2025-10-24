@@ -1,4 +1,4 @@
-// components/header.tsx
+// src/components/header.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -23,6 +23,7 @@ const fadeInDown: MotionProps = {
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false); // <- NEW
 
   return (
     <header
@@ -81,16 +82,7 @@ export default function Header() {
           </Link>
         </nav>
 
-        {/* Right: CTA (desktop) */}
-        <div className="hidden md:block">
-          <Link
-            href="#download"
-            className="group inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white backdrop-blur transition hover:bg-white/10"
-          >
-            Get the App
-            <ArrowRight className="h-4 w-4 -translate-x-0 transition group-hover:translate-x-0.5" />
-          </Link>
-        </div>
+
 
         {/* Mobile menu toggle */}
         <button
@@ -103,7 +95,7 @@ export default function Header() {
         </button>
       </motion.div>
 
-      {/* Mobile sheet (clipped, cannot exceed 100vw) */}
+      {/* Mobile sheet */}
       <motion.div
         initial={false}
         animate={open ? "open" : "closed"}
@@ -128,13 +120,6 @@ export default function Header() {
           </Link>
           <Link href="#safety_privacy" onClick={() => setOpen(false)} className="rounded-lg px-2 py-2 hover:bg-white/5">
             Safety&Privacy
-          </Link>
-          <Link
-            href="#download"
-            onClick={() => setOpen(false)}
-            className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white backdrop-blur hover:bg-white/10"
-          >
-            Get the App <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </motion.div>
