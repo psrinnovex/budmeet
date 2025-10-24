@@ -1,9 +1,9 @@
 // src/components/LaunchingSoonModal.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence, cubicBezier } from "framer-motion";
-import { ArrowRight, Sparkles, X } from "lucide-react";
+import { Sparkles, X, Rocket, Zap } from "lucide-react";
 
 const BRAND = {
   blue: "#3B82F6",
@@ -19,12 +19,6 @@ export default function LaunchingSoonModal({
   open: boolean;
   onClose: () => void;
 }) {
-  const [email, setEmail] = useState("");
-  const [hp, setHp] = useState(""); // honeypot
-  const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
-
   // Close on ESC
   useEffect(() => {
     if (!open) return;
@@ -32,58 +26,6 @@ export default function LaunchingSoonModal({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
-
-  const isValid = /\S+@\S+\.\S+/.test(email);
-
-  const handleSubmit = async (e?: React.FormEvent): Promise<void> => {
-    e?.preventDefault();
-    if (loading || !isValid) return;
-    if (hp.trim()) return; // bot guard
-
-    const key = `bm_waitlist_${email.toLowerCase()}`;
-    if (typeof window !== "undefined" && localStorage.getItem(key)) {
-      setDone(true);
-      setMsg("You’re already on the list — we’ll ping you soon!");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setMsg(null);
-
-      const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
-      const payload = {
-        email,
-        utm_source: params.get("utm_source"),
-        utm_medium: params.get("utm_medium"),
-        utm_campaign: params.get("utm_campaign"),
-        utm_term: params.get("utm_term"),
-        utm_content: params.get("utm_content"),
-        referrer: typeof document !== "undefined" ? document.referrer || null : null,
-      };
-
-      const res = await fetch("/api/notify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        type ErrJson = { error?: string };
-        const errJson = (await res.json().catch(() => ({}))) as ErrJson;
-        throw new Error(errJson.error || "Something went wrong");
-      }
-
-      if (typeof window !== "undefined") localStorage.setItem(key, "1");
-      setDone(true);
-      setMsg("You’re on the list! We’ll notify you the moment BudMeet drops.");
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Could not add you right now. Please try again.";
-      setMsg(message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <AnimatePresence>
@@ -109,103 +51,187 @@ export default function LaunchingSoonModal({
           <motion.div
             onClick={(e) => e.stopPropagation()}
             initial={{ opacity: 0, scale: 0.9, rotateX: -8 }}
-            animate={{ opacity: 1, scale: 1, rotateX: 0, transition: { type: "spring", stiffness: 260, damping: 22 } }}
-            exit={{ opacity: 0, scale: 0.94, rotateX: -4, transition: { duration: 0.2 } }}
-            className="relative w-full max-w-xl md:max-w-2xl rounded-2xl border border-white/10 bg-white/[0.05] p-6 md:p-8 text-white shadow-[0_15px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+            animate={{
+              opacity: 1,
+              scale: 1,
+              rotateX: 0,
+              transition: { type: "spring", stiffness: 260, damping: 22 },
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.94,
+              rotateX: -4,
+              transition: { duration: 0.2 },
+            }}
+            className="relative w-full max-w-xl md:max-w-2xl rounded-2xl border border-white/10 bg-white/[0.05] p-6 md:p-8 text-white shadow-[0_20px_80px_rgba(0,0,0,0.6)] backdrop-blur-xl"
           >
-            {/* Glow ring */}
+            {/* Glow ring around card */}
             <div
               aria-hidden
-              className="pointer-events-none absolute -inset-6 -z-10 rounded-[28px] opacity-50 blur-2xl"
+              className="pointer-events-none absolute -inset-6 -z-10 rounded-[28px] opacity-60 blur-2xl"
               style={{
                 background: `conic-gradient(from 180deg at 50% 50%, ${BRAND.blue}22, ${BRAND.green}22, ${BRAND.blue}22)`,
               }}
             />
 
-            {/* Shine sweep */}
-            <motion.span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+            {/* Sweeping light shimmer */}
+            <motion.span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl"
+            >
               <motion.span
                 className="absolute -left-1/3 top-0 h-full w-1/2 bg-gradient-to-r from-white/0 via-white/20 to-transparent blur-md"
                 animate={{ x: ["-120%", "140%"] }}
-                transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 2.2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               />
             </motion.span>
 
+            {/* Header row */}
             <div className="flex items-start justify-between">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/80">
-                <Sparkles className="h-3.5 w-3.5" />
-                Early Access
-              </div>
+              {/* Status pill with subtle pulse */}
+              <motion.div
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/80"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 0.4, ease: easeOutExpo },
+                }}
+              >
+                <Sparkles className="h-3.5 w-3.5 text-white/80" />
+                <span className="text-white/80">Early November Access</span>
+
+                <span className="relative flex h-2 w-2 items-center justify-center">
+                  <span className="absolute inline-block h-2 w-2 rounded-full bg-emerald-400/80" />
+                  <motion.span
+                    className="absolute inline-block h-2 w-2 rounded-full bg-emerald-400/40 blur-[2px]"
+                    animate={{ scale: [1, 1.8, 1], opacity: [0.8, 0, 0.8] }}
+                    transition={{
+                      duration: 1.6,
+                      repeat: Infinity,
+                      ease: "easeOut",
+                    }}
+                  />
+                </span>
+              </motion.div>
+
+              {/* Close button */}
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="rounded-lg border border-white/10 bg-white/5 p-1.5 text-white/70 transition hover:text-white"
+                className="rounded-lg border border-white/10 bg-white/5 p-1.5 text-white/70 transition hover:text-white hover:bg-white/10"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <h3 className="mt-4 text-xl font-semibold tracking-tight text-white">Launching Soon</h3>
-            <p className="mt-2 text-sm leading-relaxed text-white/75">
-              We’re polishing the final details. Join the early list and we’ll notify you the moment BudMeet hits the stores.
-            </p>
-
-            {/* Form */}
-            {!done ? (
-              <form onSubmit={handleSubmit} className="mt-5 space-y-3">
-                {/* Honeypot (hidden) */}
-                <label className="sr-only" htmlFor="website">Website</label>
-                <input
-                  id="website"
-                  name="website"
-                  value={hp}
-                  onChange={(e) => setHp(e.target.value)}
-                  className="hidden"
-                  tabIndex={-1}
-                  autoComplete="off"
+            {/* Floating icon burst */}
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.9, rotate: -4 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                rotate: 0,
+                transition: { delay: 0.05, duration: 0.5, ease: easeOutExpo },
+              }}
+              className="mt-6 flex items-center gap-3 text-white/70"
+            >
+              <div className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+                {/* subtle glow behind the icon */}
+                <span
+                  className="absolute inset-0 rounded-xl blur-[18px] opacity-50"
+                  style={{
+                    background: `radial-gradient(circle at 50% 50%, ${BRAND.blue}55 0%, transparent 70%)`,
+                  }}
                 />
-
-                <div className="flex items-stretch gap-2">
-                  <input
-                    type="email"
-                    inputMode="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2.5 text-sm text-white placeholder-white/40 outline-none backdrop-blur focus:border-white/20"
-                    aria-invalid={email.length > 0 && !isValid}
-                    aria-describedby="notify-help"
-                  />
-                  <button
-                    type="submit"
-                    disabled={!isValid || loading}
-                    className="inline-flex min-w-[120px] items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-white backdrop-blur transition hover:bg-white/20 disabled:opacity-50"
-                  >
-                    {loading ? (
-                      <motion.span
-                        className="inline-block h-4 w-4 rounded-full border-2 border-white/60 border-t-transparent"
-                        animate={{ rotate: 360 }}
-                        transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
-                      />
-                    ) : (
-                      <>
-                        Notify Me
-                        <ArrowRight className="h-4 w-4" />
-                      </>
-                    )}
-                  </button>
-                </div>
-                <p id="notify-help" className="text-xs text-white/60">
-                  No spam. Unsubscribe anytime.
-                </p>
-                {msg && <p className="text-xs text-rose-300/90">{msg}</p>}
-              </form>
-            ) : (
-              <div className="mt-5 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/80">
-                <p>✅ {msg || "You’re on the list!"}</p>
+                <Rocket className="relative h-5 w-5 text-white drop-shadow-[0_4px_8px_rgba(59,130,246,0.6)]" />
               </div>
-            )}
+
+              <div className="text-xs leading-relaxed text-white/60">
+                <div className="flex items-center gap-1.5 font-medium text-white/80">
+                  <Zap className="h-3.5 w-3.5 text-emerald-400" />
+                  <span>BudMeet is almost live</span>
+                </div>
+                <div className="text-[11px] text-white/50">
+                  Real connections. No endless swiping.
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Title */}
+            <motion.h3
+              className="mt-6 text-center text-2xl font-semibold leading-[1.15] tracking-tight text-white md:text-3xl"
+              initial={{ opacity: 0, y: 8, scale: 0.98 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: { delay: 0.08, duration: 0.5, ease: easeOutExpo },
+              }}
+            >
+              <motion.span
+                className="inline-block bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: `linear-gradient(90deg, ${BRAND.green}, ${BRAND.blue})`,
+                }}
+                animate={{
+                  y: [0, -2, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                Launching This November
+              </motion.span>
+            </motion.h3>
+
+            {/* Body copy */}
+            <motion.p
+              className="mx-auto mt-3 max-w-md text-center text-sm leading-relaxed text-white/70 md:text-base md:leading-relaxed"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: { delay: 0.12, duration: 0.5, ease: easeOutExpo },
+              }}
+            >
+              We’re rolling BudMeet out in November. You’ll be able to find people
+              nearby who match your vibe, make plans fast, and actually meet —
+              same day, not “someday.”
+            </motion.p>
+
+            {/* Bottom CTA */}
+            <motion.div
+              className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: { delay: 0.18, duration: 0.5, ease: easeOutExpo },
+              }}
+            >
+              {/* Dismiss button */}
+              <button
+                onClick={onClose}
+                className="group inline-flex min-w-[140px] items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-sm font-medium text-white backdrop-blur transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+              >
+                Got it
+              </button>
+
+              {/* footnote */}
+              <div className="text-center text-[11px] leading-relaxed text-white/50 sm:text-left">
+                You’re early.
+                <br />
+                BudMeet is built for real life, not feeds.
+              </div>
+            </motion.div>
           </motion.div>
         </motion.div>
       )}
