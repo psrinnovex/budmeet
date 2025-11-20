@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
       // Disallow private endpoints if any:
       // disallow: ["/api/"],
     },
-    sitemap: `${base}/sitemap-0.xml`,
+    sitemap: `${base}/sitemap.xml`,
     host: base,
   };
 }
