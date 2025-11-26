@@ -51,6 +51,7 @@ const DEFAULT_COLUMNS: LinkColumn[] = [
     heading: "Legal",
     links: [
       { label: "Privacy Policy", href: "/privacy" },
+      { label: "Delete account", href: "/delete-account" },
       { label: "Terms & Conditions", href: "/terms" },
     ],
   },
