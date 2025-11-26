@@ -7,12 +7,12 @@ const siteUrl = "https://budmeet.app";
 export const metadata: Metadata = {
   title: "BudMeet Child Safety & CSAM Policy",
   description:
-    "BudMeet is an adults-only community with a zero-tolerance approach to CSAM and the sexualization of minors.",
+    "BudMeet welcomes people age 15+ while maintaining zero tolerance for child sexual abuse material and the sexualization of minors.",
   alternates: { canonical: "/child-safety" },
   openGraph: {
     title: "BudMeet Child Safety & CSAM Policy",
     description:
-      "We remove child sexual abuse material, ban violators, work with law enforcement, and give you clear reporting channels.",
+      "We remove child sexual abuse material, ban violators, work with law enforcement, and explain how teens can report safely.",
     url: `${siteUrl}/child-safety`,
     type: "article",
   },
@@ -20,28 +20,28 @@ export const metadata: Metadata = {
 
 const keyPromises = [
   {
-    title: "Adults only, zero tolerance",
-    body: "BudMeet is intended for adults only, and we maintain a zero-tolerance stance on any CSAM or sexualization of minors.",
+    title: "Community for 15+",
+    body: "BudMeet welcomes people aged 15 and older so younger members can find teammates for school, startup ideas, study groups, and creative plans under a safety-first framework.",
   },
   {
-    title: "Report wherever you see it",
-    body: "You can flag profiles, chats, photos, events, or messages through the in-app controls or by emailing ",
+    title: "Collaboration, not isolation",
+    body: "Share subjects, work on projects, or launch interest-based groups—our design lets young adults discover each other without endless swipes or pressure.",
   },
   {
-    title: "Immediate removal & bans",
-    body: "When content appears to violate this policy, we remove it immediately and permanently ban the involved accounts.",
+    title: "CSAM & exploitation zero tolerance",
+    body: "We immediately remove any child sexual abuse material or sexualization of minors and permanently ban accounts tied to those violations.",
   },
   {
-    title: "Law enforcement cooperation",
-    body: "We notify the relevant hotlines or law-enforcement agencies in each country we operate in and fully cooperate with ongoing investigations.",
+    title: "Legal age + location safety",
+    body: "Discussions mentioning smoking, drinking, or other age-restricted activities depend on confirmed age, location, and legal compliance so that nothing encourages underage behavior.",
   },
   {
-    title: "Detection & prevention",
-    body: "A mix of manual moderation and automated signals helps us find, escalate, and block child-exploitative behavior before it spreads.",
+    title: "Report and escalate",
+    body: "Flag suspicious profiles, chats, photos, events, or messages in-app or email ",
   },
   {
-    title: "Ongoing improvements",
-    body: "We regularly review our child safety practices, aligning with applicable laws and app-store expectations.",
+    title: "We keep improving",
+    body: "Safety, moderation, and the policy itself are updated constantly to match evolving laws and app-store expectations.",
   },
 ];
 
@@ -67,8 +67,9 @@ export default function ChildSafetyPage() {
             Child Safety & CSAM Policy
           </h1>
           <p className="mt-6 text-lg text-white/70">
-            BudMeet is for adults only. We enforce a zero-tolerance approach to child sexual abuse material and any
-            sexualization of minors. Clear reporting and swift action keep this community safe for our adult members.
+            BudMeet welcomes anyone aged 15 and above. While we enable mature collaborations—subject-based groups,
+            startup idea discussions, and interest hubs—we remain zero tolerance on CSAM and any sexualization of minors.
+            Location and age checks keep age-restricted conversations compliant.
           </p>
         </div>
       </section>
@@ -84,7 +85,7 @@ export default function ChildSafetyPage() {
               <h2 className="text-xl font-semibold text-white">{item.title}</h2>
               <p className="mt-3 text-sm text-white/70">
                 {item.body}
-                {item.title === "Report wherever you see it" && (
+                {item.title === "Report and escalate" && (
                   <>
                     <Link
                       href={`mailto:${LEGAL.contactEmail}`}
