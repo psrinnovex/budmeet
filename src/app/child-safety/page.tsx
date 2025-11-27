@@ -88,10 +88,10 @@ export default function ChildSafetyPage() {
                 {item.title === "Report and escalate" && (
                   <>
                     <Link
-                      href={`mailto:${LEGAL.contactEmail}`}
+                      href={`mailto:${LEGAL.safeftyemail}`}
                       className="underline decoration-cyan-400/80 underline-offset-2"
                     >
-                      {LEGAL.contactEmail}
+                      {LEGAL.safeftyemail}
                     </Link>
                     .
                   </>
@@ -121,10 +121,10 @@ export default function ChildSafetyPage() {
             Report directly inside the BudMeet app wherever you see suspicious profiles, chats, photos, events, or
             messages. You can also email us any supporting context at{" "}
             <Link
-              href={`mailto:${LEGAL.contactEmail}`}
+              href={`mailto:${LEGAL.safeftyemail}`}
               className="underline decoration-cyan-400/80 underline-offset-2"
             >
-              {LEGAL.contactEmail}
+              {LEGAL.safeftyemail}
             </Link>
             .
           </p>

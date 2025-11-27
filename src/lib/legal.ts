@@ -7,6 +7,7 @@ export const LEGAL = {
   companyName: "PSHR Innovex Pvt Ltd",
   companyCountry: "India",
   contactEmail: "support@budmeet.app",
+  safeftyemail: "safety@budmeet.app",
   address: "Kadapa, Andhra Pradesh, India",
   effectiveDate: "2025-10-18",
 
