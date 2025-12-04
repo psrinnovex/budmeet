@@ -2,13 +2,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, cubicBezier } from "framer-motion";
-import { ArrowRight, Sparkles, Users } from "lucide-react";
+import { motion, cubicBezier, AnimatePresence } from "framer-motion";
+import { ArrowRight, Sparkles, Users, X } from "lucide-react";
 import { Canvas } from "@react-three/fiber";
 import { Float, Sparkles as DreiSparkles } from "@react-three/drei";
 import Link from "next/link";
 import Image from "next/image";
-import LaunchingSoonModal from "@/components/LaunchingSoonModal"; // ← reuse the modal
 
 const BRAND = {
   bg: "#0B0F14",
@@ -16,6 +15,10 @@ const BRAND = {
   blue: "#3B82F6",
   white: "#FFFFFF",
 };
+
+const APP_STORE_URL =
+  "https://apps.apple.com/us/app/budmeet-meet-real-people/id6754511646";
+const PLAY_STORE_URL = "#playstore"; // TODO: replace with real Play Store URL when live
 
 const easeOutExpo = cubicBezier(0.16, 1, 0.3, 1);
 
@@ -36,7 +39,7 @@ const item = {
 function Background3D() {
   return (
     <Canvas
-      className="!block w-full h-full"
+      className="!block h-full w-full"
       dpr={[1, 1.5]}
       gl={{ antialias: true }}
       camera={{ position: [0, 0, 8], fov: 55 }}
@@ -86,16 +89,19 @@ export default function Hero() {
       </div>
 
       {/* Glows + grid overlays (also clipped) */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-x-clip">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 overflow-x-clip"
+      >
         <div
-          className="absolute -right-24 -top-24 h-[24rem] w-[24rem] blur-[90px] opacity-30 sm:h-[28rem] sm:w-[28rem] md:h-[32rem] md:w-[32rem]"
+          className="absolute -right-24 -top-24 h-[24rem] w-[24rem] opacity-30 blur-[90px] sm:h-[28rem] sm:w-[28rem] md:h-[32rem] md:w-[32rem]"
           style={{
             background:
               "radial-gradient(50% 50% at 50% 50%, rgba(59,130,246,0.5) 0%, rgba(59,130,246,0.0) 70%)",
           }}
         />
         <div
-          className="absolute -left-24 bottom-[-8rem] h-[26rem] w-[26rem] blur-[100px] opacity-30 sm:h-[30rem] sm:w-[30rem] md:h-[34rem] md:w-[34rem]"
+          className="absolute -left-24 bottom-[-8rem] h-[26rem] w-[26rem] opacity-30 blur-[100px] sm:h-[30rem] sm:w-[30rem] md:h-[34rem] md:w-[34rem]"
           style={{
             background:
               "radial-gradient(50% 50% at 50% 50%, rgba(22,219,101,0.5) 0%, rgba(22,219,101,0.0) 70%)",
@@ -105,7 +111,12 @@ export default function Hero() {
           <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
-                <path d="M 32 0 L 0 0 0 32" fill="none" stroke="white" strokeWidth="0.5" />
+                <path
+                  d="M 32 0 L 0 0 0 32"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="0.5"
+                />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#grid)" />
@@ -116,13 +127,13 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative mx-auto max-w-7xl px-4 pt-12 pb-16 sm:pt-16 sm:pb-20 md:pt-20 md:pb-24">
+      <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-12 sm:pb-20 sm:pt-16 md:pb-24 md:pt-20">
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="grid min-h-[60vh] items-center gap-10 md:grid-cols-2 md:min-h-[68vh] lg:min-h-[72vh]"
+          className="grid min-h-[60vh] items-center gap-10 md:min-h-[68vh] md:grid-cols-2 lg:min-h-[72vh]"
         >
           {/* Copy */}
           <div className="space-y-6">
@@ -159,7 +170,7 @@ export default function Hero() {
             </motion.p>
 
             <motion.div variants={item} className="flex flex-col gap-3 sm:flex-row">
-              {/* Get the App -> open modal */}
+              {/* Get the App -> open dialog */}
               <Link
                 href="#download"
                 onClick={(e) => {
@@ -215,7 +226,7 @@ export default function Hero() {
                 }}
               />
               {/* Device card */}
-              <div className="relative rounded-[2rem] border border-white/10 bg-white/[0.04] p-2 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
+              <div className="relative rounded-[2rem] border border-white/10 bg-white/[0.04] p-2 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl">
                 <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-black/60 p-2">
                   <div className="relative mx-auto aspect-[9/19.5] w-full overflow-hidden rounded-[1.2rem]">
                     <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-[1.2rem]">
@@ -237,8 +248,123 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Modal Mount */}
-      <LaunchingSoonModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      {/* Get App Dialog */}
+      <GetAppDialog open={modalOpen} onClose={() => setModalOpen(false)} />
     </section>
+  );
+}
+
+/* -------------------------- Get App Dialog Component ------------------------- */
+
+type GetAppDialogProps = {
+  open: boolean;
+  onClose: () => void;
+};
+
+function GetAppDialog({ open, onClose }: GetAppDialogProps) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+
+          {/* Dialog */}
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center px-4"
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+          >
+            <div className="relative w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-950/95 p-5 shadow-2xl">
+              {/* Close button */}
+              <button
+                className="absolute right-3 top-3 rounded-full p-1 text-zinc-500 hover:bg-zinc-800/60 hover:text-zinc-200"
+                onClick={onClose}
+                aria-label="Close"
+              >
+                <X size={16} />
+              </button>
+
+              <div className="mb-4">
+                <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-cyan-400/80">
+                  Get BudMeet
+                </p>
+                <h3 className="mt-1 text-lg font-semibold text-zinc-50">
+                  Choose where to download
+                </h3>
+                <p className="mt-1 text-sm text-zinc-400">
+                  Install BudMeet on your phone and start meeting real people nearby.
+                </p>
+              </div>
+
+              <div className="mt-4 space-y-3">
+                {/* App Store */}
+                <a
+                  href={APP_STORE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 rounded-xl border border-zinc-700/80 bg-zinc-900/70 px-4 py-3 text-sm text-zinc-100 transition hover:border-cyan-400/70 hover:bg-zinc-900"
+                >
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-black/70">
+                    <Image
+                      src="/app-store.png"
+                      alt="Download on the App Store"
+                      width={28}
+                      height={28}
+                      className="object-contain"
+                    />
+                  </span>
+                  <div className="flex flex-col">
+                    <span className="text-[11px] uppercase tracking-[0.16em] text-zinc-400">
+                      Download on the
+                    </span>
+                    <span className="text-sm font-medium text-zinc-50">
+                      App Store
+                    </span>
+                  </div>
+                </a>
+
+                {/* Google Play */}
+                <a
+                  href={PLAY_STORE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 rounded-xl border border-zinc-700/80 bg-zinc-900/70 px-4 py-3 text-sm text-zinc-100 transition hover:border-emerald-400/70 hover:bg-zinc-900"
+                >
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-black/70">
+                    <Image
+                      src="/playstore.svg"
+                      alt="Get it on Google Play"
+                      width={28}
+                      height={28}
+                      className="object-contain"
+                    />
+                  </span>
+                  <div className="flex flex-col">
+                    <span className="text-[11px] uppercase tracking-[0.16em] text-zinc-400">
+                      Get it on
+                    </span>
+                    <span className="text-sm font-medium text-zinc-50">
+                      Google Play
+                    </span>
+                  </div>
+                </a>
+              </div>
+
+              <p className="mt-3 text-[11px] text-zinc-500">
+                Tip: Open this page on your phone for the smoothest install.
+              </p>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }

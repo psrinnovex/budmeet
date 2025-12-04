@@ -66,7 +66,7 @@ const DEFAULT_SOCIALS: SocialItem[] = [
 ];
 
 const DEFAULT_BADGES = [
-  { label: "App Store", href: "#appstore", iconSrc: "/app-store.png" },
+  { label: "App Store", href: "https://apps.apple.com/us/app/budmeet-meet-real-people/id6754511646", iconSrc: "/app-store.png" },
   { label: "Google Play", href: "#playstore", iconSrc: "/playstore.svg" },
 ];
 
@@ -158,22 +158,14 @@ export default function AdvancedFooter({
 
                 <div className="flex flex-wrap items-center gap-3">
                   {appBadges.map((b) => {
-                    const isInternal = b.href.startsWith("/") || b.href.startsWith("#");
+                    const isInternal = b.href.startsWith("/");
                     const badgeInner = (
                       <>
                         <Image src={b.iconSrc} alt="" width={16} height={16} />
                         {b.label}
                       </>
                     );
-                    return isInternal ? (
-                      <Link
-                        key={b.label}
-                        href={b.href}
-                        className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-sm text-zinc-200 transition hover:bg-zinc-900/60"
-                      >
-                        {badgeInner}
-                      </Link>
-                    ) : (
+                    return(
                       <a
                         key={b.label}
                         href={b.href}
